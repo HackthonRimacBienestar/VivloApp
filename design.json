@@ -1,0 +1,1160 @@
+{
+  "meta": {
+    "name": "Highlight Mobility Design System",
+    "version": "1.0.0",
+    "last_updated": "2025-11-17",
+    "source_reference": "Ride-hailing inspiration board (screenshot)",
+    "mission": "Create a calm, confident mobility companion that feels premium yet friendly across every surface."
+  },
+  "brand_principles": [
+    {
+      "pillar": "Effortless Clarity",
+      "description": "Every screen should answer 'what's next?' with obvious actions, strong contrast, and clear hierarchy."
+    },
+    {
+      "pillar": "Human Utility",
+      "description": "Pair pragmatic layouts with soft corners, rounded typography, and approachable illustrations so logistics feel personal."
+    },
+    {
+      "pillar": "Confident Precision",
+      "description": "Use disciplined spacing, minimal color, and precise grid alignment to communicate trust and reliability."
+    },
+    {
+      "pillar": "Ambient Motion",
+      "description": "Transitions should be subtle and physics-informed, guiding attention without stealing focus."
+    }
+  ],
+  "foundations": {
+    "layout": {
+      "grid": "Mobile portrait safe area width 375pt (iPhone 14 baseline). 12-column flexible grid with 4pt gutters. Primary content spans full width on utility screens and 10 columns on marketing surfaces.",
+      "margins": {
+        "small_screen": 16,
+        "large_screen": 24
+      },
+      "safe_zones": "Respect status bar and navigation indicator with 12pt padding. Floating panels keep 12pt inset from edges.",
+      "max_content_width": 720,
+      "scroll_behaviors": "Map + list screens use a fixed map layer with scrollable sheets or lists above, implemented with slivers where possible."
+    },
+    "spacing": {
+      "base_unit": 4,
+      "scale": {
+        "xxs": 4,
+        "xs": 8,
+        "sm": 12,
+        "md": 16,
+        "lg": 20,
+        "xl": 24,
+        "xxl": 32,
+        "hero": 48
+      },
+      "application": "Stacks breathe with 12-16pt vertical rhythm. Interactive elements keep a minimum of 48pt touch height. Cards retain 16pt internal padding."
+    },
+    "typography": {
+      "primary_family": "Uber Move / Rounded geometric sans. Fallback: SF Pro Rounded, Inter",
+      "weights": [
+        "Regular",
+        "Medium",
+        "Bold"
+      ],
+      "line_height_ratio": "1.2 - 1.4 depending on size",
+      "styles": {
+        "display_l": {
+          "size": 34,
+          "weight": "Bold",
+          "tracking": -1,
+          "usage": "Large promotional headlines, e.g., banner offers."
+        },
+        "display_m": {
+          "size": 28,
+          "weight": "Bold",
+          "tracking": -0.5,
+          "usage": "Section headers such as 'Services'."
+        },
+        "title": {
+          "size": 22,
+          "weight": "Medium",
+          "usage": "Panel titles, ride selection headings."
+        },
+        "subtitle": {
+          "size": 18,
+          "weight": "Medium",
+          "usage": "Component headings, driver details."
+        },
+        "body": {
+          "size": 16,
+          "weight": "Regular",
+          "usage": "Primary descriptive text."
+        },
+        "body_small": {
+          "size": 14,
+          "weight": "Regular",
+          "usage": "Metadata, pill labels, list hints."
+        },
+        "caption": {
+          "size": 12,
+          "weight": "Medium",
+          "usage": "Map callouts, badge copy."
+        }
+      },
+      "flutter_text_roles": {
+        "headlineLarge": "display_l",
+        "headlineMedium": "display_m",
+        "titleLarge": "title",
+        "titleMedium": "subtitle",
+        "bodyLarge": "body",
+        "bodyMedium": "body_small",
+        "labelSmall": "caption"
+      },
+      "numeric": {
+        "price": {
+          "size": 20,
+          "weight": "Bold",
+          "tracking": -0.5,
+          "usage": "Final prices and receipts."
+        },
+        "eta": {
+          "size": 18,
+          "weight": "Medium",
+          "usage": "Live ETA pills and countdowns."
+        }
+      }
+    },
+    "colors": {
+      "neutrals": {
+        "ink": "#0B0B0F",
+        "ink-muted": "#3F3F44",
+        "ink-soft": "#6B6B73",
+        "line": "#D7D7D3",
+        "surface": "#FFFFFF",
+        "surface-muted": "#F5F5F2",
+        "surface-hint": "#F0F0EA"
+      },
+      "brand_palette": {
+        "flare_red": {
+          "hex": "#F7052D",
+          "usage": "Primary energy and hero actions."
+        },
+        "ember_orange": {
+          "hex": "#FD6201",
+          "usage": "Supporting CTAs, gradients, and service highlights."
+        },
+        "pulse_magenta": {
+          "hex": "#D41983",
+          "usage": "Information accents, status pills, and premium tiers."
+        },
+        "pure_white": {
+          "hex": "#FFFFFF",
+          "usage": "Typography on dark fills and light surfacing."
+        },
+        "whatsapp_green": {
+          "hex": "#00FF7F",
+          "usage": "Dedicated color for WhatsApp support entry point."
+        }
+      },
+      "accent": {
+        "primary": "#F7052D",
+        "secondary": "#FD6201",
+        "info": "#D41983",
+        "promo": "#FFFFFF",
+        "highlight": "#FFF5F2",
+        "danger": "#F7052D",
+        "whatsapp": "#00FF7F"
+      },
+      "status": {
+        "success": "#31B579",
+        "warning": "#FFAF3F",
+        "error": "#FF5A5F",
+        "offline": "#9C9C9C"
+      },
+      "map": {
+        "land": "#F4F1EA",
+        "water": "#D6E8F5",
+        "road": "#D5D1C8",
+        "route_primary": "#111111",
+        "route_secondary": "#6B6B73",
+        "poi": "#3CDE8A"
+      },
+      "usage_notes": "Color is mostly neutral. Reserve accent.primary (#F7052D) for hero CTAs, accent.secondary (#FD6201) for secondary actions, accent.info (#D41983) for data highlights, and accent.whatsapp (#00FF7F) exclusively for WhatsApp support buttons. Pure white (#FFFFFF) grounds typography on colored fills.",
+      "semantic_roles": {
+        "primary": "accent.primary",
+        "on_primary": "neutrals.surface",
+        "primary_container": "accent.secondary",
+        "on_primary_container": "neutrals.ink",
+        "surface": "neutrals.surface",
+        "on_surface": "neutrals.ink",
+        "surface_muted": "neutrals.surface-muted",
+        "on_surface_muted": "neutrals.ink-soft",
+        "surface_variant": "neutrals.surface-hint",
+        "on_surface_variant": "neutrals.ink-soft",
+        "outline": "neutrals.line",
+        "error": "status.error",
+        "on_error": "neutrals.surface",
+        "success": "status.success",
+        "warning": "status.warning"
+      },
+      "themes": {
+        "light": {
+          "description": "Uses base neutrals, accent, status and map colors defined above."
+        },
+        "dark": {
+          "neutrals": {
+            "ink": "#F7F7FA",
+            "ink-muted": "#C6C6D0",
+            "ink-soft": "#8E8E98",
+            "surface": "#101014",
+            "surface-muted": "#18181D",
+            "surface-hint": "#1F1F26",
+            "line": "#2C2C33"
+          },
+          "map": {
+            "land": "#15151A",
+            "water": "#18212B",
+            "road": "#2C2C33",
+            "route_primary": "#FFFFFF",
+            "route_secondary": "#8E8E98",
+            "poi": "#3CDE8A"
+          }
+        }
+      }
+    },
+    "radii": {
+      "none": 0,
+      "soft": 8,
+      "card": 16,
+      "sheet": 24,
+      "pill": 999
+    },
+    "elevation": {
+      "level_0": {
+        "blur": 0,
+        "spread": 0,
+        "color": "transparent"
+      },
+      "level_1": {
+        "blur": 12,
+        "offsetY": 2,
+        "color": "rgba(0,0,0,0.06)",
+        "usage": "Cards resting on base surface."
+      },
+      "level_2": {
+        "blur": 20,
+        "offsetY": 4,
+        "color": "rgba(0,0,0,0.10)",
+        "usage": "Floating panels, bottom sheets."
+      },
+      "level_3": {
+        "blur": 32,
+        "offsetY": 8,
+        "color": "rgba(0,0,0,0.16)",
+        "usage": "Modal overlays and map callouts."
+      }
+    },
+    "iconography": {
+      "style": "Outlined pictograms with rounded corners and minimal detail.",
+      "stroke": 1.5,
+      "corner_radius": 4,
+      "fill_usage": "Solid fills for vehicles and hero illustrations; system icons remain outlined.",
+      "color_usage": "Default to ink-muted; switch to accent_primary on active state."
+    },
+    "imagery": {
+      "illustrations": "Isometric, slightly whimsical objects with soft gradients and drop shadows.",
+      "photography": "If used, keep muted saturation with warm undertones to align with promo banners.",
+      "map_overlay": "Use semi-transparent rounded rectangles and simple icon badges for live callouts."
+    },
+    "motion": {
+      "principles": "Material-like easing (0.2/0/0/1). Panels slide vertically, map markers spring lightly (damping 0.7).",
+      "durations_ms": {
+        "fast": 120,
+        "standard": 220,
+        "gentle": 320
+      },
+      "behavior": "Buttons fade between states; list items push content with shared-axis transitions."
+    },
+    "surfaces": {
+      "background": "surface-muted",
+      "card": "surface",
+      "sheet": "surface",
+      "modal": "surface",
+      "scrim": "rgba(0,0,0,0.45)"
+    },
+    "interaction_states": {
+      "overlay_opacity": {
+        "pressed": 0.08,
+        "hovered": 0.04,
+        "focused": 0.12,
+        "dragged": 0.16
+      },
+      "opacity": {
+        "disabled": 0.38
+      },
+      "border": {
+        "focus_width": 2
+      }
+    },
+    "responsive": {
+      "breakpoints": {
+        "compact": 0,
+        "medium": 600,
+        "expanded": 900
+      },
+      "rules": {
+        "compact": "Use single-column lists and full-width bottom sheets.",
+        "medium": "Use 2-3 column grids where applicable; bottom sheets max 640pt width and centered on large screens.",
+        "expanded": "Use master-detail with navigation or lists on the left and map + detail content on the right."
+      }
+    },
+    "density": {
+      "comfortable": {
+        "row_height": 64,
+        "vertical_padding": 12
+      },
+      "compact": {
+        "row_height": 52,
+        "vertical_padding": 8
+      }
+    }
+  },
+  "systems": {
+    "feedback": {
+      "snackbar": {
+        "background": "ink",
+        "text_style": "body_small",
+        "radius": 16,
+        "icon_size": 20,
+        "max_width": 320,
+        "elevation": "level_2"
+      },
+      "toast": {
+        "background": "ink",
+        "text_style": "caption",
+        "radius": 999,
+        "elevation": "level_2"
+      },
+      "banner": {
+        "height": 56,
+        "padding": 12,
+        "background_info": "accent_info",
+        "background_warning": "status.warning",
+        "background_error": "status.error",
+        "text_style": "body_small"
+      }
+    },
+    "skeletons": {
+      "list_item": {
+        "height": 64,
+        "radius": 12,
+        "elements": [
+          "avatar",
+          "line_primary",
+          "line_secondary"
+        ]
+      },
+      "card": {
+        "height": 96,
+        "radius": 20
+      }
+    },
+    "empty_states": {
+      "generic": {
+        "icon": "location-off",
+        "title_style": "title",
+        "body_style": "body_small",
+        "cta_component": "Secondary Ghost Button"
+      },
+      "network_offline": {
+        "icon": "signal-off",
+        "message": "You’re offline. Check your connection.",
+        "cta_label": "Retry"
+      },
+      "no_rides": {
+        "icon": "car-off",
+        "message": "No rides available right now. Try a different time or location.",
+        "cta_label": "Adjust search"
+      }
+    },
+    "safety": {
+      "sheet": {
+        "background": "surface",
+        "radius": {
+          "top": 28,
+          "bottom": 0
+        },
+        "shadow": "level_2"
+      }
+    }
+  },
+  "components": [
+    {
+      "name": "App Shell",
+      "role": "Wraps tab navigation, safe-area background, and top hero content.",
+      "anatomy": [
+        "status bar spacer",
+        "top bar (logo, tabs)",
+        "content canvas",
+        "bottom navigation"
+      ],
+      "styling": {
+        "background": "surface-muted",
+        "tabs": {
+          "inactive_color": "ink-soft",
+          "active_indicator": {
+            "height": 3,
+            "radius": 2,
+            "color": "accent_info"
+          }
+        }
+      },
+      "states": [
+        "rides",
+        "eats"
+      ],
+      "interaction": "Tabs switch contexts with 220ms sliding underline."
+    },
+    {
+      "name": "Search Hero",
+      "description": "Primary entry point with location pills and contextual filters.",
+      "anatomy": [
+        "container",
+        "label",
+        "placeholder",
+        "suffix icons (clock, chevron)",
+        "filter pills"
+      ],
+      "styling": {
+        "height": 64,
+        "padding": 16,
+        "background": "surface",
+        "border_radius": 28,
+        "border": {
+          "color": "line",
+          "width": 1
+        }
+      },
+      "states": {
+        "idle": "placeholder text",
+        "focused": "accent_primary outline",
+        "filled": "show origin/destination"
+      },
+      "notes": "Filter pills use pill radius with accent_info outline when active."
+    },
+    {
+      "name": "Suggestions Carousel",
+      "description": "Horizontal scroll of quick destinations/services.",
+      "anatomy": [
+        "section title",
+        "see all CTA",
+        "cards"
+      ],
+      "card_style": {
+        "size": {
+          "width": 120,
+          "height": 108
+        },
+        "padding": 12,
+        "iconography": "Rounded square background with monochrome icon",
+        "label_style": "body_small"
+      },
+      "interaction": "Scrolls with snap-to-card behavior and 12pt gap."
+    },
+    {
+      "name": "Promo Banner",
+      "description": "Large message block featuring illustration and CTA.",
+      "styling": {
+        "background_gradient": [
+          "#F7052D",
+          "#FD6201"
+        ],
+        "text_color": "#FFFFFF",
+        "padding": 20,
+        "radius": 20,
+        "elevation": "level_1"
+      },
+      "content_model": {
+        "headline": "display_m",
+        "support": "body",
+        "cta": "text button with underline"
+      }
+    },
+    {
+      "name": "Services Grid",
+      "description": "Two-tier grid of tile buttons representing product categories.",
+      "grid": {
+        "columns": 3,
+        "gap": 12
+      },
+      "tile": {
+        "size": {
+          "min_height": 88
+        },
+        "padding": 12,
+        "radius": 16,
+        "background": "surface",
+        "border": "line",
+        "icon_container": {
+          "size": 48,
+          "radius": 12,
+          "background": "surface-hint"
+        },
+        "label": "body_small bold",
+        "promo_chip": {
+          "background": "accent_secondary",
+          "text_color": "ink"
+        }
+      },
+      "states": [
+        "default",
+        "hover",
+        "pressed",
+        "disabled (reduce opacity 40%)"
+      ]
+    },
+    {
+      "name": "Location List Item",
+      "description": "List rows showing past or suggested destinations.",
+      "anatomy": [
+        "leading icon",
+        "title",
+        "subtitle",
+        "divider"
+      ],
+      "styling": {
+        "height": 64,
+        "padding": {
+          "horizontal": 16,
+          "vertical": 8
+        },
+        "divider": {
+          "color": "line",
+          "inset": 16
+        }
+      }
+    },
+    {
+      "name": "Filter Pills",
+      "description": "Rounded selectors for pickup time, passenger count, etc.",
+      "styling": {
+        "height": 32,
+        "padding_horizontal": 12,
+        "background": "surface",
+        "border": {
+          "width": 1,
+          "color": "line"
+        },
+        "active": {
+          "border_color": "accent_primary",
+          "background": "surface"
+        },
+        "label_style": "body_small medium"
+      }
+    },
+    {
+      "name": "Bottom Sheet",
+      "description": "Draggable panel for ride selection and live status.",
+      "anatomy": [
+        "drag handle",
+        "title row",
+        "content stack",
+        "primary CTA"
+      ],
+      "styling": {
+        "background": "surface",
+        "radius": {
+          "top": 28,
+          "bottom": 0
+        },
+        "shadow": "level_2",
+        "padding": 24
+      },
+      "breakpoints": {
+        "peek": 120,
+        "half": 360,
+        "full": "fit content"
+      },
+      "motion": "Snap between states with spring easing."
+    },
+    {
+      "name": "Ride Option Card",
+      "description": "Selectable card listing vehicle class, ETA, capacity, and price.",
+      "anatomy": [
+        "thumbnail car",
+        "name + capacity",
+        "arrival time",
+        "price",
+        "badge stack"
+      ],
+      "styling": {
+        "background": "surface",
+        "border_radius": 20,
+        "padding": 16,
+        "border": {
+          "width": 1,
+          "color": "line"
+        },
+        "selected_state": {
+          "border_color": "ink",
+          "shadow": "level_1",
+          "inner_glow": "accent_secondary"
+        }
+      },
+      "badge_usage": [
+        "Fastest",
+        "Promo",
+        "Shared"
+      ],
+      "states": [
+        "default",
+        "hover",
+        "pressed",
+        "selected",
+        "disabled"
+      ]
+    },
+    {
+      "name": "Primary CTA Button",
+      "description": "Solid flare-red button with full-width option.",
+      "properties": {
+        "height": 56,
+        "radius": 999,
+        "background": "accent_primary",
+        "text_style": "title",
+        "text_color": "surface",
+        "spacing": "24pt horizontal padding"
+      },
+      "states": {
+        "enabled": {
+          "opacity": 1
+        },
+        "pressed": {
+          "background": "#C60423"
+        },
+        "disabled": {
+          "background": "ink-soft",
+          "text_color": "surface-muted"
+        }
+      }
+    },
+    {
+      "name": "WhatsApp Support Button",
+      "description": "Entry point to chat with support via WhatsApp.",
+      "properties": {
+        "height": 48,
+        "radius": 16,
+        "background": "accent.whatsapp",
+        "text_color": "neutrals.ink",
+        "icon": "WhatsApp logo in neutrals.ink",
+        "text_style": "body",
+        "spacing": "16pt horizontal padding"
+      },
+      "states": {
+        "enabled": {
+          "shadow": "level_1"
+        },
+        "pressed": {
+          "background": "#00E873"
+        },
+        "disabled": {
+          "opacity": 0.5
+        }
+      },
+      "notes": "Only use the WhatsApp green for this action to maintain color meaning across the brand."
+    },
+    {
+      "name": "Secondary Ghost Button",
+      "description": "Outlined button used for tertiary actions.",
+      "properties": {
+        "height": 44,
+        "radius": 999,
+        "border": {
+          "width": 1,
+          "color": "accent_secondary"
+        },
+        "text_color": "accent_secondary"
+      }
+    },
+    {
+      "name": "Tag / Chip",
+      "description": "Prominent pill used for 'Promo' or status labels.",
+      "styling": {
+        "height": 20,
+        "padding_horizontal": 8,
+        "font": "caption bold",
+        "background_options": [
+          "accent_primary",
+          "accent_secondary",
+          "accent_info"
+        ],
+        "text_color": "ink"
+      }
+    },
+    {
+      "name": "Driver Status Card",
+      "description": "Live tracking summary containing driver photo, vehicle, rating, and contact actions.",
+      "anatomy": [
+        "map snapshot",
+        "driver info row",
+        "action buttons",
+        "notes input"
+      ],
+      "styling": {
+        "background": "surface",
+        "padding": 20,
+        "radius": 28,
+        "shadow": "level_2"
+      },
+      "action_buttons": [
+        "call",
+        "message",
+        "share"
+      ],
+      "notes_field": {
+        "type": "pill input",
+        "placeholder": "Any pickup notes?"
+      }
+    },
+    {
+      "name": "Map Callout",
+      "description": "Floating label that pins pickup and drop-off.",
+      "styling": {
+        "background": "surface",
+        "padding": 12,
+        "radius": 12,
+        "shadow": "level_3",
+        "text_style": "body_small"
+      },
+      "states": [
+        "default",
+        "active with accent_primary border"
+      ]
+    },
+    {
+      "name": "Text Field",
+      "description": "Rounded input with icon-leading support.",
+      "styling": {
+        "height": 52,
+        "padding_horizontal": 16,
+        "radius": 16,
+        "background": "surface",
+        "border": "line"
+      },
+      "states": {
+        "default": {
+          "border_color": "line"
+        },
+        "focus": {
+          "border_color": "accent_primary",
+          "shadow": "level_1"
+        },
+        "error": {
+          "border_color": "danger"
+        }
+      }
+    },
+    {
+      "name": "Keyboard Accessory Bar",
+      "description": "Optional quick actions bar above system keyboard.",
+      "styling": {
+        "background": "#DADCE3",
+        "button_radius": 12,
+        "font": "body_small"
+      }
+    },
+    {
+      "name": "Top App Bar - Map",
+      "description": "Transparent app bar over the map with blur and contextual actions.",
+      "anatomy": [
+        "background blur",
+        "leading action (back or menu)",
+        "title or address",
+        "trailing icons (help, profile)"
+      ],
+      "styling": {
+        "background": "scrim with low opacity over map",
+        "height": 56,
+        "title_style": "subtitle",
+        "icon_size": 24,
+        "elevation": "level_0"
+      },
+      "behavior": "Appears over the map, remains pinned while map is visible, collapses to a minimal state when sheets are fully expanded."
+    },
+    {
+      "name": "Top App Bar - Surface",
+      "description": "Solid surface app bar for list/detail screens.",
+      "anatomy": [
+        "container",
+        "leading icon",
+        "title",
+        "trailing actions"
+      ],
+      "styling": {
+        "background": "surface",
+        "height": 56,
+        "title_style": "subtitle",
+        "shadow": "level_1",
+        "divider": {
+          "color": "line",
+          "visible_on_scroll": true
+        }
+      },
+      "behavior": "Elevates when content scrolls under it; supports large-title variant paired with scrollable content."
+    },
+    {
+      "name": "Bottom Navigation Bar",
+      "description": "Primary navigation between main areas (e.g., Rides, Eats, Activity).",
+      "anatomy": [
+        "container",
+        "navigation items (icon + label)"
+      ],
+      "styling": {
+        "height": 72,
+        "background": "surface",
+        "elevation": "level_2",
+        "icon_size": 24,
+        "label_style": "body_small"
+      },
+      "states": {
+        "item": {
+          "selected": {
+            "icon_color": "accent_primary",
+            "label_color": "accent_primary"
+          },
+          "unselected": {
+            "icon_color": "ink-soft",
+            "label_color": "ink-soft"
+          }
+        }
+      }
+    },
+    {
+      "name": "Snackbar",
+      "description": "Transient feedback anchored near the bottom, above navigation.",
+      "anatomy": [
+        "container",
+        "icon (optional)",
+        "message",
+        "action button (optional)"
+      ],
+      "styling": {
+        "background": "ink",
+        "text_style": "body_small",
+        "radius": 16,
+        "padding": 12,
+        "max_width": 320,
+        "elevation": "level_2"
+      },
+      "behavior": "Auto-dismiss after a few seconds, only one visible at a time, appears above bottom sheet/navigation."
+    },
+    {
+      "name": "Toast",
+      "description": "Lightweight status pill overlay used for non-critical confirmations.",
+      "anatomy": [
+        "container",
+        "message"
+      ],
+      "styling": {
+        "background": "ink",
+        "text_style": "caption",
+        "radius": 999,
+        "padding_horizontal": 16,
+        "padding_vertical": 8,
+        "elevation": "level_2"
+      }
+    },
+    {
+      "name": "Inline Banner",
+      "description": "Persistent informational banner at the top of content.",
+      "anatomy": [
+        "icon",
+        "message",
+        "action (optional)",
+        "dismiss (optional)"
+      ],
+      "styling": {
+        "height": 56,
+        "padding": 12,
+        "background_info": "accent_info",
+        "background_warning": "status.warning",
+        "background_error": "status.error",
+        "text_style": "body_small"
+      }
+    },
+    {
+      "name": "Skeleton List Item",
+      "description": "Placeholder row used while content is loading.",
+      "anatomy": [
+        "avatar block",
+        "primary line",
+        "secondary line"
+      ],
+      "styling": {
+        "height": 64,
+        "radius": 12
+      }
+    },
+    {
+      "name": "Skeleton Card",
+      "description": "Placeholder card used while ride options or promos load.",
+      "anatomy": [
+        "rectangular block",
+        "short lines"
+      ],
+      "styling": {
+        "height": 96,
+        "radius": 20
+      }
+    },
+    {
+      "name": "Empty State View",
+      "description": "Reusable layout for no-content states like no rides, no history, or offline.",
+      "anatomy": [
+        "illustration or icon",
+        "title",
+        "body text",
+        "primary action",
+        "secondary action (optional)"
+      ],
+      "styling": {
+        "padding": 24,
+        "alignment": "center",
+        "title_style": "title",
+        "body_style": "body_small"
+      }
+    },
+    {
+      "name": "Safety Sheet",
+      "description": "Bottom sheet focused on safety and support actions for an active trip.",
+      "anatomy": [
+        "drag handle",
+        "title",
+        "quick safety actions",
+        "trip details",
+        "support links"
+      ],
+      "styling": {
+        "background": "surface",
+        "radius": {
+          "top": 28,
+          "bottom": 0
+        },
+        "shadow": "level_2",
+        "padding": 24
+      },
+      "actions": [
+        "Share trip status",
+        "Call emergency",
+        "Contact support"
+      ]
+    },
+    {
+      "name": "Trip Summary Card",
+      "description": "Card representing a completed trip in history or receipts.",
+      "anatomy": [
+        "route thumbnail",
+        "pickup + dropoff",
+        "date/time",
+        "price",
+        "secondary actions"
+      ],
+      "styling": {
+        "background": "surface",
+        "radius": 20,
+        "padding": 16,
+        "shadow": "level_1"
+      },
+      "actions": [
+        "View receipt",
+        "Report issue"
+      ]
+    },
+    {
+      "name": "Checkbox",
+      "description": "Binary selection control for forms and preferences.",
+      "anatomy": [
+        "box",
+        "checkmark",
+        "label"
+      ],
+      "styling": {
+        "size": 20,
+        "radius": 4,
+        "border_color": "line",
+        "check_color": "accent_primary",
+        "label_style": "body_small"
+      },
+      "states": [
+        "unchecked",
+        "checked",
+        "indeterminate",
+        "disabled"
+      ]
+    },
+    {
+      "name": "Radio Group",
+      "description": "Group of mutually exclusive choices.",
+      "anatomy": [
+        "outer circle",
+        "inner dot",
+        "label"
+      ],
+      "styling": {
+        "size": 20,
+        "border_color": "line",
+        "selected_color": "accent_primary",
+        "label_style": "body_small"
+      },
+      "states": [
+        "unselected",
+        "selected",
+        "disabled"
+      ]
+    },
+    {
+      "name": "Toggle Switch",
+      "description": "On/off control for binary preferences like saving addresses.",
+      "anatomy": [
+        "track",
+        "thumb"
+      ],
+      "styling": {
+        "track_width": 44,
+        "track_height": 24,
+        "track_radius": 12,
+        "thumb_diameter": 20,
+        "on_color": "accent_primary",
+        "off_color": "surface-hint"
+      },
+      "states": [
+        "on",
+        "off",
+        "disabled"
+      ]
+    },
+    {
+      "name": "Segmented Control",
+      "description": "Horizontal control for switching between related views or filters (e.g., Past / Upcoming).",
+      "anatomy": [
+        "container",
+        "segments (label + optional icon)"
+      ],
+      "styling": {
+        "height": 36,
+        "radius": 999,
+        "background": "surface-muted",
+        "segment_selected": {
+          "background": "surface",
+          "label_style": "body_small"
+        },
+        "segment_unselected": {
+          "label_style": "body_small"
+        }
+      }
+    },
+    {
+      "name": "Select / Dropdown Field",
+      "description": "Field that opens a menu of choices (e.g., payment method, country).",
+      "anatomy": [
+        "label",
+        "value text",
+        "trailing icon",
+        "menu items"
+      ],
+      "styling": {
+        "height": 52,
+        "radius": 16,
+        "background": "surface",
+        "border": "line",
+        "text_style": "body",
+        "icon": "chevron-down"
+      },
+      "states": {
+        "default": {
+          "border_color": "line"
+        },
+        "focus": {
+          "border_color": "accent_primary",
+          "shadow": "level_1"
+        },
+        "error": {
+          "border_color": "danger"
+        }
+      }
+    }
+  ],
+  "patterns": {
+    "plan_ride_flow": {
+      "steps": [
+        "Landing search",
+        "Pickup selection",
+        "Destination selection",
+        "Ride choice",
+        "Confirmation"
+      ],
+      "guidelines": "Each step uses a sticky progress context (pills at top). Provide back arrow in top-left on sub-pages."
+    },
+    "map_plus_sheet": {
+      "description": "Map occupies upper 60% while sheet slides over bottom 40%.",
+      "interaction": "When sheet expands, map scales down subtly (0.96) to show depth."
+    },
+    "driver_tracking": {
+      "description": "Live location updates every 1s with route line and ETA pill.",
+      "ui_elements": [
+        "map callouts",
+        "driver status card",
+        "share ETA button"
+      ],
+      "tone": "Reassuring, highlight driver rating and arrival countdown."
+    },
+    "services_catalog": {
+      "description": "Modular grid of service tiles sorted by 'Go anywhere' then 'Get anything delivered'.",
+      "rules": "Section title uses display_m, subtitles in body_small uppercase. Provide equal tile heights with icons centered."
+    },
+    "responsive_layout": {
+      "description": "How layout adapts across compact, medium, and expanded widths.",
+      "rules": [
+        "Compact: focus on single column lists and full-width bottom sheets.",
+        "Medium: increase grid columns and introduce side padding for readability.",
+        "Expanded: use split panes with navigation or lists on the left and detail on the right."
+      ]
+    },
+    "error_handling": {
+      "description": "Use inline banners for recoverable errors, snackbars for transient issues, and full empty states when no content is available.",
+      "ui_elements": [
+        "Inline Banner",
+        "Snackbar",
+        "Empty State View"
+      ]
+    },
+    "safety_support": {
+      "description": "Safety and help access is always within one tap from active trip screens.",
+      "ui_elements": [
+        "Safety Sheet",
+        "Driver Status Card",
+        "Help center entry"
+      ],
+      "rules": "Never hide safety actions behind more than one layer of navigation. Prioritize clear, descriptive labels."
+    },
+    "trip_history": {
+      "description": "Chronological list of completed trips grouped by date.",
+      "ui_elements": [
+        "Trip Summary Card",
+        "Filter Pills",
+        "Empty State View"
+      ],
+      "rules": "Group trips by day with clear headings; keep price and time aligned for quick scanning."
+    }
+  },
+  "content_guidelines": {
+    "voice": "Friendly, direct, lightly conversational.",
+    "numbers": "Use 1 decimal for price if cents matter, otherwise round.",
+    "capitalization": "Sentence case everywhere except navigation labels.",
+    "cta_format": "Verbs first (e.g., 'Choose UberX', 'Share ETA').",
+    "error_messages": "Stay calm and actionable: briefly explain what happened and what the rider can do next.",
+    "empty_states_copy": "Acknowledge the situation, reassure the user, and always provide a clear next step."
+  },
+  "accessibility": {
+    "contrast": "Maintain 4.5:1 for body text, 3:1 for large headings. Primary button text is pure white on black (21:1).",
+    "hit_targets": "Minimum 48x48pt touch areas.",
+    "motion_reduction": "Provide fade alternatives for slide transitions when reduced motion is enabled.",
+    "language": "Announce driver states with concise status updates (e.g., 'Driver arriving in 3 minutes').",
+    "gestures": "Ensure any swipe or drag interaction has an equivalent button or action accessible via keyboard and screen reader."
+  }
+}

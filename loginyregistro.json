@@ -1,0 +1,453 @@
+{
+  "ui_specification": {
+    "description": "Especificación de UI para pantallas de autenticación (Login, Registro, Forgot Password). Estructura, tipografía, componentes y espaciados. Los colores se mantienen del branding actual de RIMAC Contigo.",
+    
+    "typography": {
+      "font_family": "Plus Jakarta Sans",
+      "styles": {
+        "page_title": {
+          "font_size": 28,
+          "font_weight": "bold",
+          "letter_spacing": -0.5,
+          "line_height": 1.2,
+          "usage": "Títulos principales de página (Welcome Back!, Create Your Account?, Forgot Password?)"
+        },
+        "page_subtitle": {
+          "font_size": 15,
+          "font_weight": "regular",
+          "letter_spacing": 0,
+          "line_height": 1.4,
+          "usage": "Subtítulos descriptivos debajo del título principal"
+        },
+        "input_label": {
+          "font_size": 14,
+          "font_weight": "regular",
+          "letter_spacing": 0,
+          "line_height": 1.4,
+          "usage": "Labels de campos de entrada (Email address*, Password*, etc.)"
+        },
+        "input_text": {
+          "font_size": 16,
+          "font_weight": "regular",
+          "letter_spacing": 0,
+          "line_height": 1.4,
+          "usage": "Texto dentro de los campos de entrada"
+        },
+        "input_placeholder": {
+          "font_size": 16,
+          "font_weight": "regular",
+          "letter_spacing": 0,
+          "line_height": 1.4,
+          "opacity": 0.6,
+          "usage": "Placeholder text en campos vacíos"
+        },
+        "button_primary": {
+          "font_size": 16,
+          "font_weight": "semi_bold",
+          "letter_spacing": 0.2,
+          "line_height": 1.4,
+          "usage": "Texto en botones primarios (Sign in, Register, Send Code)"
+        },
+        "button_social": {
+          "font_size": 15,
+          "font_weight": "medium",
+          "letter_spacing": 0,
+          "line_height": 1.4,
+          "usage": "Texto en botones de login social (Google, Apple)"
+        },
+        "link_text": {
+          "font_size": 15,
+          "font_weight": "semi_bold",
+          "letter_spacing": 0,
+          "line_height": 1.4,
+          "usage": "Links de navegación (Forgot Password?, Sign up, Sign In)"
+        },
+        "checkbox_label": {
+          "font_size": 14,
+          "font_weight": "regular",
+          "letter_spacing": 0,
+          "line_height": 1.4,
+          "usage": "Texto de checkbox (Remember me)"
+        },
+        "separator_text": {
+          "font_size": 14,
+          "font_weight": "medium",
+          "letter_spacing": 0,
+          "line_height": 1.4,
+          "usage": "Texto del separador (Or continue with)"
+        },
+        "footer_text": {
+          "font_size": 14,
+          "font_weight": "regular",
+          "letter_spacing": 0,
+          "line_height": 1.4,
+          "usage": "Texto del footer (Don't have an account?, Already have an account?)"
+        }
+      }
+    },
+
+    "layout_structure": {
+      "header": {
+        "height": 180,
+        "padding": {
+          "top": 40,
+          "left": 24,
+          "right": 24,
+          "bottom": 0
+        },
+        "status_bar": {
+          "height": 24,
+          "time_font_size": 14,
+          "icon_size": 20
+        },
+        "wordmark": {
+          "logo_size": 48,
+          "logo_border_radius": 12,
+          "logo_padding": 8,
+          "logo_shadow": {
+            "opacity": 0.12,
+            "blur_radius": 12,
+            "offset_y": 4,
+            "spread_radius": 0
+          },
+          "spacing_between_logo_and_text": 16,
+          "brand_text_size": 13,
+          "brand_letter_spacing": 1.4,
+          "product_text_size": 30,
+          "product_letter_spacing": -0.3,
+          "spacing_between_brand_and_product": 2
+        },
+        "curve_separator": {
+          "height": 50,
+          "curve_depth": 20
+        }
+      },
+      "content_area": {
+        "background_padding": {
+          "horizontal": 24,
+          "top": 24,
+          "bottom": 24
+        },
+        "card": {
+          "padding": {
+            "all": 24
+          },
+          "border_radius": 24,
+          "shadow": {
+            "opacity": 0.08,
+            "blur_radius": 20,
+            "offset_y": 4,
+            "spread_radius": 0
+          },
+          "spacing": {
+            "title_to_subtitle": 8,
+            "subtitle_to_first_input": 32,
+            "between_inputs": 20,
+            "last_input_to_button": 24,
+            "button_to_link": 20
+          }
+        }
+      },
+      "footer": {
+        "padding": {
+          "top": 24,
+          "bottom": 24,
+          "horizontal": 24
+        },
+        "spacing_between_text_and_link": 4
+      }
+    },
+
+    "components": {
+      "input_field": {
+        "height": 52,
+        "border_radius": 16,
+        "border_width": 1,
+        "padding": {
+          "horizontal": 16,
+          "vertical": 16
+        },
+        "icon": {
+          "leading_size": 22,
+          "leading_padding": {
+            "left": 12,
+            "right": 8
+          },
+          "suffix_size": 24,
+          "suffix_padding": {
+            "right": 12
+          }
+        },
+        "label": {
+          "spacing_below": 8
+        },
+        "focus_state": {
+          "shadow_opacity": 0.1,
+          "shadow_blur": 12,
+          "shadow_offset_y": 2
+        },
+        "error_state": {
+          "border_width": 1,
+          "error_text_spacing_top": 8,
+          "error_text_size": 12
+        }
+      },
+      "primary_button": {
+        "height": 56,
+        "border_radius": 999,
+        "padding": {
+          "horizontal": 24,
+          "vertical": 16
+        },
+        "icon": {
+          "size": 20,
+          "spacing_from_text": 8,
+          "type": "paper_plane"
+        },
+        "loading_state": {
+          "indicator_size": 20,
+          "indicator_stroke_width": 2
+        },
+        "elevation": 0
+      },
+      "social_button": {
+        "height": 52,
+        "border_radius": 16,
+        "border_width": 1,
+        "padding": {
+          "horizontal": 20,
+          "vertical": 14
+        },
+        "icon": {
+          "size": 24,
+          "spacing_from_text": 12
+        },
+        "layout": "horizontal",
+        "spacing_between_buttons": 12
+      },
+      "checkbox": {
+        "size": 20,
+        "border_radius": 4,
+        "border_width": 2,
+        "spacing_from_label": 12,
+        "label_alignment": "center"
+      },
+      "separator": {
+        "line_height": 1,
+        "line_thickness": 1,
+        "spacing": {
+          "above": 24,
+          "below": 24
+        },
+        "text_padding": {
+          "horizontal": 16
+        }
+      },
+      "link_button": {
+        "padding": {
+          "vertical": 8,
+          "horizontal": 4
+        },
+        "min_touch_target": 44
+      }
+    },
+
+    "spacing_system": {
+      "base_unit": 4,
+      "scale": {
+        "xxs": 4,
+        "xs": 8,
+        "sm": 12,
+        "md": 16,
+        "lg": 20,
+        "xl": 24,
+        "xxl": 32,
+        "hero": 48
+      },
+      "vertical_rhythm": 12,
+      "min_touch_target": 44,
+      "card_internal_padding": 16
+    },
+
+    "border_radius": {
+      "none": 0,
+      "soft": 8,
+      "card": 16,
+      "sheet": 24,
+      "pill": 999,
+      "checkbox": 4
+    },
+
+    "shadows": {
+      "card": {
+        "opacity": 0.08,
+        "blur_radius": 20,
+        "offset": {
+          "x": 0,
+          "y": 4
+        },
+        "spread_radius": 0
+      },
+      "logo": {
+        "opacity": 0.12,
+        "blur_radius": 12,
+        "offset": {
+          "x": 0,
+          "y": 4
+        },
+        "spread_radius": 0
+      },
+      "input_focus": {
+        "opacity": 0.1,
+        "blur_radius": 12,
+        "offset": {
+          "x": 0,
+          "y": 2
+        },
+        "spread_radius": 0
+      }
+    },
+
+    "iconography": {
+      "sizes": {
+        "small": 16,
+        "medium": 20,
+        "large": 24,
+        "xlarge": 32
+      },
+      "input_leading": 22,
+      "input_suffix": 24,
+      "button_icon": 20,
+      "social_logo": 24,
+      "status_bar": 20
+    },
+
+    "screen_specifics": {
+      "login_page": {
+        "title": "Welcome Back!",
+        "subtitle": "Sign in to access smart, personalized travel plans made for you.",
+        "inputs": [
+          {
+            "type": "email_or_dni",
+            "label": "Email address*",
+            "placeholder": "example@gmail.com",
+            "icon": "person_outline"
+          },
+          {
+            "type": "password",
+            "label": "Password*",
+            "placeholder": "@Sn123hsn#",
+            "icon": "lock_outline",
+            "has_visibility_toggle": true
+          }
+        ],
+        "options": {
+          "checkbox": "Remember me",
+          "link": "Forgot Password?"
+        },
+        "primary_action": {
+          "text": "Sign in",
+          "icon": "paper_plane"
+        },
+        "social_options": ["Google", "Apple"],
+        "footer": {
+          "text": "Don't have an account?",
+          "link": "Sign up"
+        }
+      },
+      "sign_up_page": {
+        "title": "Create Your Account?",
+        "subtitle": "Create your account to explore exciting travel destinations and adventures.",
+        "inputs": [
+          {
+            "type": "text",
+            "label": "Full Name*",
+            "placeholder": "Alex Smith",
+            "icon": "person_outline"
+          },
+          {
+            "type": "email",
+            "label": "Email address*",
+            "placeholder": "example@gmail.com",
+            "icon": "email_outline"
+          },
+          {
+            "type": "password",
+            "label": "Password*",
+            "placeholder": "@Sn123hsn#",
+            "icon": "lock_outline",
+            "has_visibility_toggle": true
+          }
+        ],
+        "primary_action": {
+          "text": "Register",
+          "icon": "paper_plane"
+        },
+        "social_options": ["Google", "Apple"],
+        "footer": {
+          "text": "Already have an account?",
+          "link": "Sign In"
+        }
+      },
+      "forgot_password_page": {
+        "title": "Forgot Password?",
+        "subtitle": "Enter your email and we'll send a 5-digit verification code instantly.",
+        "inputs": [
+          {
+            "type": "email",
+            "label": "Email address*",
+            "placeholder": "example@gmail.com",
+            "icon": "email_outline"
+          }
+        ],
+        "primary_action": {
+          "text": "Send Code",
+          "icon": "paper_plane"
+        },
+        "footer": {
+          "text": "Already have an account?",
+          "link": "Sign In"
+        }
+      }
+    },
+
+    "interaction_patterns": {
+      "input_focus": {
+        "border_change": "immediate",
+        "shadow_appears": "immediate",
+        "animation_duration": 200
+      },
+      "button_press": {
+        "scale_effect": false,
+        "ripple_effect": true,
+        "animation_duration": 150
+      },
+      "navigation": {
+        "transition_type": "slide",
+        "transition_duration": 300
+      }
+    },
+
+    "accessibility": {
+      "min_touch_target": 44,
+      "input_min_height": 52,
+      "button_min_height": 56,
+      "text_contrast_ratio": "WCAG AA compliant",
+      "focus_indicators": "visible"
+    },
+
+    "responsive_breakpoints": {
+      "mobile": {
+        "max_width": 480,
+        "padding_horizontal": 24
+      },
+      "tablet": {
+        "min_width": 481,
+        "max_width": 768,
+        "padding_horizontal": 32,
+        "card_max_width": 500
+      }
+    }
+  }
+}
+

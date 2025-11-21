@@ -1,0 +1,360 @@
+{
+    "meta": {
+      "name": "Flutter Clean Architecture Blueprint",
+      "description": "Estructura de proyecto Flutter basada en Clean Architecture, feature-first y modular.",
+      "version": "1.0.0",
+      "last_updated": "2025-11-17"
+    },
+    "layers": [
+      {
+        "name": "presentation",
+        "responsibilities": [
+          "Widgets, páginas, navegación y manejo de estado (Bloc, Cubit, Riverpod, etc.)",
+          "Orquestar casos de uso del dominio",
+          "Transformar estados de dominio en UI (pantallas, mensajes, feedback)"
+        ],
+        "depends_on": [
+          "domain",
+          "core"
+        ]
+      },
+      {
+        "name": "domain",
+        "responsibilities": [
+          "Reglas de negocio puras",
+          "Entities, interfaces de repositorios, casos de uso",
+          "No depende de Flutter ni de librerías externas"
+        ],
+        "depends_on": [
+          "core"
+        ]
+      },
+      {
+        "name": "data",
+        "responsibilities": [
+          "Implementaciones concretas de repositorios",
+          "DataSources remotos y locales (API, DB, storage)",
+          "Mapeo entre models (DTOs) y entities de dominio"
+        ],
+        "depends_on": [
+          "domain",
+          "core"
+        ]
+      },
+      {
+        "name": "core",
+        "responsibilities": [
+          "Funcionalidad transversal a toda la app",
+          "Errores comunes, network, utilidades, design system base",
+          "No contiene lógica de negocio específica de un feature"
+        ],
+        "depends_on": []
+      },
+      {
+        "name": "shared",
+        "responsibilities": [
+          "Recursos compartidos de alto nivel (localización, constantes)",
+          "No estrictamente parte del core de negocio, pero sí reutilizados"
+        ],
+        "depends_on": [
+          "core"
+        ]
+      },
+      {
+        "name": "app",
+        "responsibilities": [
+          "Bootstrap de la app",
+          "Configuración de router, temas, localización",
+          "Inyección de dependencias (DI)"
+        ],
+        "depends_on": [
+          "core",
+          "features",
+          "shared"
+        ]
+      }
+    ],
+    "dependencies_rule": {
+      "description": "Las dependencias siempre apuntan hacia adentro (presentation → domain → core). Presentation nunca conoce directamente data, solo a través de domain.",
+      "allowed_flows": [
+        "presentation → domain",
+        "presentation → core",
+        "presentation → shared",
+        "presentation → app",
+        "domain → core",
+        "data → domain",
+        "data → core",
+        "app → all layers (para wiring/DI, no para lógica)"
+      ],
+      "forbidden_flows_examples": [
+        "domain → presentation",
+        "domain → data",
+        "core → features",
+        "data → presentation"
+      ]
+    },
+    "structure": {
+      "root": "lib/",
+      "folders": {
+        "app": {
+          "description": "Bootstrap y configuración global de la aplicación.",
+          "files": [
+            "app.dart",
+            "router.dart"
+          ],
+          "subfolders": {
+            "di": {
+              "description": "Contenedor de inyección de dependencias.",
+              "files": [
+                "injection_container.dart"
+              ]
+            }
+          }
+        },
+        "core": {
+          "description": "Código transversal: errores, config, network, utils, design system base.",
+          "subfolders": {
+            "config": {
+              "description": "Configuración de entorno y flavors.",
+              "files": [
+                "env.dart",
+                "flavor.dart"
+              ]
+            },
+            "error": {
+              "description": "Manejo de fallos y excepciones.",
+              "files": [
+                "exceptions.dart",
+                "failures.dart"
+              ]
+            },
+            "network": {
+              "description": "Clientes de red y utilidades relacionadas.",
+              "files": [
+                "http_client.dart",
+                "network_info.dart"
+              ]
+            },
+            "usecase": {
+              "description": "Clase(s) base para casos de uso.",
+              "files": [
+                "usecase.dart"
+              ]
+            },
+            "utils": {
+              "description": "Utilidades genéricas (helpers, validadores, logger).",
+              "files": [
+                "logger.dart",
+                "validators.dart"
+              ]
+            },
+            "ui": {
+              "description": "Design system global (tema, tipografía, colores, widgets base).",
+              "subfolders": {
+                "theme": {
+                  "description": "Definición de temas de la app.",
+                  "files": [
+                    "typography.dart",
+                    "colors.dart",
+                    "theme.dart"
+                  ]
+                },
+                "widgets": {
+                  "description": "Componentes UI reutilizables en toda la app.",
+                  "examples": [
+                    "primary_button.dart",
+                    "app_scaffold.dart"
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "features": {
+          "description": "Cada feature agrupa su propia presentación, dominio y data.",
+          "feature_template": {
+            "name_placeholder": "<feature_name>",
+            "path_example": "features/auth/",
+            "subfolders": {
+              "presentation": {
+                "description": "UI y estado del feature.",
+                "subfolders": {
+                  "pages": {
+                    "description": "Pantallas completas.",
+                    "examples": [
+                      "login_page.dart",
+                      "ride_search_page.dart"
+                    ]
+                  },
+                  "widgets": {
+                    "description": "Widgets internos a este feature.",
+                    "examples": [
+                      "login_form.dart",
+                      "ride_option_card.dart"
+                    ]
+                  },
+                  "state": {
+                    "description": "Gestores de estado (Bloc, Cubit, Riverpod, etc.).",
+                    "examples": [
+                      "login_cubit.dart",
+                      "login_state.dart",
+                      "ride_search_cubit.dart",
+                      "ride_search_state.dart"
+                    ]
+                  }
+                }
+              },
+              "domain": {
+                "description": "Lógica de negocio del feature.",
+                "subfolders": {
+                  "entities": {
+                    "description": "Modelos de dominio puros.",
+                    "examples": [
+                      "user.dart",
+                      "ride.dart",
+                      "location.dart"
+                    ]
+                  },
+                  "repositories": {
+                    "description": "Interfaces de repositorios.",
+                    "examples": [
+                      "auth_repository.dart",
+                      "ride_repository.dart"
+                    ]
+                  },
+                  "usecases": {
+                    "description": "Casos de uso orientados al dominio.",
+                    "examples": [
+                      "login_usecase.dart",
+                      "register_usecase.dart",
+                      "get_ride_options_usecase.dart",
+                      "confirm_ride_usecase.dart"
+                    ]
+                  }
+                }
+              },
+              "data": {
+                "description": "Implementaciones concretas de acceso a datos.",
+                "subfolders": {
+                  "datasources": {
+                    "description": "Fuentes de datos remotas y locales.",
+                    "subfolders": {
+                      "remote": {
+                        "description": "API, servicios externos.",
+                        "examples": [
+                          "auth_remote_datasource.dart",
+                          "ride_remote_datasource.dart"
+                        ]
+                      },
+                      "local": {
+                        "description": "Base de datos local, caché, storage.",
+                        "examples": [
+                          "auth_local_datasource.dart",
+                          "ride_local_datasource.dart"
+                        ]
+                      }
+                    }
+                  },
+                  "models": {
+                    "description": "DTOs/Models que mapean hacia/desde Entities.",
+                    "examples": [
+                      "user_model.dart",
+                      "ride_model.dart",
+                      "location_model.dart"
+                    ]
+                  },
+                  "repositories": {
+                    "description": "Implementaciones concretas de repositorios de dominio.",
+                    "examples": [
+                      "auth_repository_impl.dart",
+                      "ride_repository_impl.dart"
+                    ]
+                  }
+                }
+              }
+            }
+          },
+          "examples": [
+            "features/auth/...",
+            "features/ride/...",
+            "features/payments/..."
+          ]
+        },
+        "shared": {
+          "description": "Recursos compartidos de alto nivel (i18n, constantes).",
+          "subfolders": {
+            "localization": {
+              "description": "Soporte multi-idioma.",
+              "files": [
+                "l10n.dart"
+              ]
+            },
+            "constants": {
+              "description": "Constantes de app: rutas, claves, etc.",
+              "files": [
+                "app_constants.dart",
+                "routes.dart"
+              ]
+            }
+          }
+        }
+      }
+    },
+    "naming_conventions": {
+      "presentation": {
+        "page": "FeatureNamePage",
+        "widget": "FeatureSpecificWidget",
+        "cubit": "FeatureNameCubit",
+        "bloc": "FeatureNameBloc",
+        "state": "FeatureNameState"
+      },
+      "domain": {
+        "entity": "EntityName",
+        "repository_interface": "EntityNameRepository",
+        "usecase": "ActionEntityNameUseCase"
+      },
+      "data": {
+        "repository_impl": "EntityNameRepositoryImpl",
+        "remote_datasource": "EntityNameRemoteDataSource",
+        "local_datasource": "EntityNameLocalDataSource",
+        "model": "EntityNameModel"
+      },
+      "tests": {
+        "rule": "Misimos paths que en lib/ pero bajo test/",
+        "example": {
+          "source": "lib/features/ride/domain/usecases/get_ride_options_usecase.dart",
+          "test": "test/features/ride/domain/usecases/get_ride_options_usecase_test.dart"
+        }
+      }
+    },
+    "usecase_base": {
+      "description": "Clase base genérica para casos de uso en domain.",
+      "pseudo_dart": "abstract class UseCase<Output, Params> { Future<Output> call(Params params); }"
+    },
+    "example_flows": [
+      {
+        "name": "Ride Search Flow",
+        "steps": [
+          "RideSearchPage (presentation) recibe input del usuario.",
+          "RideSearchCubit (state) invoca GetRideOptionsUseCase.",
+          "GetRideOptionsUseCase (domain) llama a RideRepository.",
+          "RideRepositoryImpl (data) decide usar RideRemoteDataSource y/o RideLocalDataSource.",
+          "RideRemoteDataSource llama a la API de rides.",
+          "RideModel mapea la respuesta JSON a Ride (entity).",
+          "GetRideOptionsUseCase devuelve List<Ride> al Cubit.",
+          "RideSearchCubit actualiza su estado (loading → success) con una lista de Ride.",
+          "RideSearchPage reconstruye la UI mostrando las opciones de ride."
+        ]
+      }
+    ],
+    "rules_summary": {
+      "principles": [
+        "Cada feature tiene su propio presentation/domain/data.",
+        "El dominio es puro y desacoplado de Flutter.",
+        "La capa data implementa los contratos definidos en domain.",
+        "La capa presentation solo habla con domain via casos de uso.",
+        "La configuración global se centraliza en app/ y core/."
+      ]
+    }
+  }
+  
