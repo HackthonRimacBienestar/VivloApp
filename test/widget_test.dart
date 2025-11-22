@@ -13,6 +13,6 @@ void main() {
   testWidgets('Renderiza la app principal', (tester) async {
     await tester.pumpWidget(const App());
 
-    expect(find.text('RIMAC Contigo'), findsOneWidget);
+    expect(find.text('Vivlo Contigo'), findsOneWidget);
   });
 }

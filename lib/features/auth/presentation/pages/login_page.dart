@@ -1,11 +1,9 @@
 import 'package:flutter/material.dart';
-import 'dart:ui';
+
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:follow_well/core/services/auth_service.dart';
 import 'package:follow_well/shared/constants/routes.dart';
-import '../../../../core/ui/widgets/app_scaffold.dart';
 import '../../../../core/ui/widgets/widgets.dart';
-import '../../../../core/ui/widgets/jobsly_wordmark.dart';
 import '../../../../core/ui/theme/colors.dart';
 import '../../../../core/ui/theme/gradients.dart';
 import '../../../../core/ui/theme/spacing.dart';
@@ -17,13 +15,45 @@ class LoginPage extends StatefulWidget {
   State<LoginPage> createState() => _LoginPageState();
 }
 
-class _LoginPageState extends State<LoginPage> {
+class _LoginPageState extends State<LoginPage>
+    with SingleTickerProviderStateMixin {
   final _auth = AuthService();
   bool _isLoading = false;
+  late AnimationController _controller;
+  Animation<double>? _headerHeightAnimation;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 600),
+    );
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    if (_headerHeightAnimation == null) {
+      _headerHeightAnimation = Tween<double>(
+        begin: 180,
+        end: MediaQuery.of(context).size.height,
+      ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeInOut));
+    }
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
 
   Future<void> _login() async {
     setState(() => _isLoading = true);
     try {
+      // Animate header down
+      await _controller.forward();
+
       await _auth.login();
       setState(() {});
       // Navegar al agente después del login exitoso
@@ -32,6 +62,8 @@ class _LoginPageState extends State<LoginPage> {
       }
     } catch (e) {
       debugPrint('Error login: $e');
+      // Reverse animation on error/cancel
+      _controller.reverse();
       if (mounted) {
         ScaffoldMessenger.of(
           context,
@@ -117,43 +149,65 @@ class _LoginPageState extends State<LoginPage> {
       showAppBar: false,
       body: Column(
         children: [
-          // Header con curva y gradiente
-          Container(
-            height: 180,
-            decoration: const BoxDecoration(gradient: AppGradients.flameHero),
-            child: Stack(
-              children: [
-                // Botón de regreso (opcional, dependiendo de la navegación)
-                if (Navigator.canPop(context))
-                  Positioned(
-                    top: 40,
-                    left: 16,
-                    child: IconButton(
-                      icon: const Icon(Icons.arrow_back, color: Colors.white),
-                      onPressed: () => Navigator.pop(context),
+          // Header con curva y gradiente que se expande hacia abajo
+          AnimatedBuilder(
+            animation: _controller,
+            builder: (context, child) {
+              final headerHeight = _headerHeightAnimation?.value ?? 180;
+              final isExpanded = _controller.value > 0;
+
+              return SizedBox(
+                height: headerHeight,
+                child: Stack(
+                  children: [
+                    // Fondo naranja que se expande
+                    Positioned.fill(
+                      child: Container(
+                        decoration: const BoxDecoration(
+                          gradient: AppGradients.flameHero,
+                        ),
+                      ),
                     ),
-                  ),
-                // Contenido del header alineado a la izquierda
-                Positioned(
-                  top: 0,
-                  left: 0,
-                  right: 0,
-                  child: JobslyWordmark(
-                    padding: const EdgeInsets.fromLTRB(24, 40, 24, 0),
-                  ),
+                    // Curva decorativa en la parte inferior
+                    if (!isExpanded)
+                      Positioned(
+                        bottom: -1,
+                        left: 0,
+                        right: 0,
+                        child: CustomPaint(
+                          size: Size(MediaQuery.of(context).size.width, 50),
+                          painter: _WavePainter(),
+                        ),
+                      ),
+                    // Botón de regreso
+                    if (Navigator.canPop(context) && !isExpanded)
+                      Positioned(
+                        top: 40,
+                        left: 16,
+                        child: IconButton(
+                          icon: const Icon(
+                            Icons.arrow_back,
+                            color: Colors.white,
+                          ),
+                          onPressed: () => Navigator.pop(context),
+                        ),
+                      ),
+                    // Contenido del header (logo)
+                    Positioned(
+                      top: 0,
+                      left: 0,
+                      right: 0,
+                      child: Opacity(
+                        opacity: 1.0 - _controller.value,
+                        child: JobslyWordmark(
+                          padding: const EdgeInsets.fromLTRB(24, 40, 24, 0),
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
-                // Curva decorativa
-                Positioned(
-                  bottom: -1,
-                  left: 0,
-                  right: 0,
-                  child: CustomPaint(
-                    size: Size(MediaQuery.of(context).size.width, 50),
-                    painter: _WavePainter(),
-                  ),
-                ),
-              ],
-            ),
+              );
+            },
           ),
 
           // Contenido principal
@@ -165,7 +219,8 @@ class _LoginPageState extends State<LoginPage> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
-                    const SizedBox(height: AppSpacing.md),
+                    // Increased spacing to push form lower
+                    const SizedBox(height: 60),
 
                     // Tarjeta blanca con formulario
                     Container(
@@ -175,7 +230,7 @@ class _LoginPageState extends State<LoginPage> {
                         borderRadius: BorderRadius.circular(24),
                         boxShadow: [
                           BoxShadow(
-                            color: Colors.black.withOpacity(0.08),
+                            color: Colors.black.withAlpha(20),
                             blurRadius: 20,
                             offset: const Offset(0, 4),
                           ),
@@ -196,7 +251,7 @@ class _LoginPageState extends State<LoginPage> {
                               color: AppColors.ink,
                             ),
                           ),
-                          const SizedBox(height: 8),
+                          const SizedBox(height: 12),
                           // Subtítulo
                           Text(
                             'Inicia sesión para continuar',
@@ -209,7 +264,7 @@ class _LoginPageState extends State<LoginPage> {
                               color: AppColors.inkMuted,
                             ),
                           ),
-                          const SizedBox(height: 32),
+                          const SizedBox(height: 48),
 
                           // Botón Iniciar Sesión
                           PrimaryButton(
@@ -219,7 +274,7 @@ class _LoginPageState extends State<LoginPage> {
                             fullWidth: true,
                           ),
 
-                          const SizedBox(height: 24),
+                          const SizedBox(height: 32),
 
                           // Divider "O inicia sesión con"
                           Row(
@@ -254,7 +309,7 @@ class _LoginPageState extends State<LoginPage> {
                               ),
                             ],
                           ),
-                          const SizedBox(height: 24),
+                          const SizedBox(height: 32),
 
                           // Botones sociales
                           Row(
@@ -276,7 +331,7 @@ class _LoginPageState extends State<LoginPage> {
                               ),
                             ],
                           ),
-                          const SizedBox(height: 24),
+                          const SizedBox(height: 32),
 
                           // Link a registro
                           Center(

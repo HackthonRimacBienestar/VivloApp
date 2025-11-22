@@ -1,4 +1,4 @@
-# RIMAC Contigo - Design System Quick Reference
+# Rimac Vivlo - Design System Quick Reference
 
 ## 🎨 Brand Colors
 

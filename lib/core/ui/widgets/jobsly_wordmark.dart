@@ -6,7 +6,7 @@ class JobslyWordmark extends StatelessWidget {
   final double brandFontSize;
   final double productFontSize;
   final bool showLogo;
-  final EdgeInsetsGeometry padding;
+  final EdgeInsetsGeometry? padding;
   final double logoSize;
 
   const JobslyWordmark({
@@ -15,7 +15,7 @@ class JobslyWordmark extends StatelessWidget {
     this.productFontSize = 30,
     this.logoSize = 48,
     this.showLogo = true,
-    this.padding = EdgeInsets.zero,
+    this.padding,
   });
 
   @override
@@ -69,7 +69,7 @@ class JobslyWordmark extends StatelessWidget {
     );
 
     return Padding(
-      padding: padding,
+      padding: padding ?? EdgeInsets.zero,
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
@@ -80,9 +80,9 @@ class JobslyWordmark extends StatelessWidget {
               mainAxisSize: MainAxisSize.min,
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Text('RIMAC', style: brandStyle),
+                Text('Contigo', style: brandStyle),
                 const SizedBox(height: 2),
-                Text('Contigo', style: productStyle),
+                Text('Vivlo', style: productStyle),
               ],
             ),
           ),

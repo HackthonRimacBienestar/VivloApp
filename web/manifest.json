@@ -1,11 +1,11 @@
 {
-    "name": "RIMAC Contigo",
-    "short_name": "RIMAC Contigo",
+    "name": "Vivlo RIMAC",
+    "short_name": "Vivlo RIMAC",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",
     "theme_color": "#0175C2",
-    "description": "RIMAC Contigo - Programa de cuidado crónico",
+    "description": "Vivlo Contigo - Programa de cuidado crónico",
     "orientation": "portrait-primary",
     "prefer_related_applications": false,
     "icons": [

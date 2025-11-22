@@ -1,3 +1,3 @@
-RIMAC Contigo
+Vivlo Contigo
 
-Ruta Vital RIMAC
+Vivlo RIMAC
