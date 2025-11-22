@@ -108,4 +108,6 @@ class AppRoutes {
   static const String error = '/common/error';
   static const String permissionsRequest = '/common/permissions-request';
   static const String featureTour = '/common/feature-tour';
+  static const String voiceDictation = '/voice-dictation';
+  static const String voiceAgent = '/voice-agent';
 }

@@ -7,12 +7,23 @@ class HomeDashboardPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const AppScaffold(
+    return AppScaffold(
       title: 'Inicio',
       body: Center(
-        child: Text('Home / Tablero principal'),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            const Text('Home / Tablero principal'),
+            const SizedBox(height: 20),
+            ElevatedButton(
+              onPressed: () {
+                Navigator.pushNamed(context, '/voice-agent');
+              },
+              child: const Text('Probar Agente de Voz'),
+            ),
+          ],
+        ),
       ),
     );
   }
 }
-
