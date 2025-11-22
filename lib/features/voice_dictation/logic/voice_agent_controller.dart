@@ -21,6 +21,12 @@ class VoiceAgentController extends ChangeNotifier {
 
   bool _isDisposed = false;
 
+  bool _userInitiatedDisconnect = false;
+  int _reconnectAttempts = 0;
+  static const int _maxReconnectAttempts = 5;
+  static const Duration _reconnectDelay = Duration(seconds: 2);
+  Timer? _reconnectTimer;
+
   // Getters
   bool get isConnected => _isConnected;
   bool get isListening => _isListening;
@@ -47,6 +53,9 @@ class VoiceAgentController extends ChangeNotifier {
   }
 
   Future<void> connect() async {
+    _userInitiatedDisconnect = false;
+    _reconnectTimer?.cancel();
+
     _status = "Conectando...";
     _safeNotifyListeners();
 
@@ -54,6 +63,7 @@ class VoiceAgentController extends ChangeNotifier {
       onReady: () {
         if (_isDisposed) return;
         _isConnected = true;
+        _reconnectAttempts = 0; // Reset attempts on success
         _status = "Conectado";
         _safeNotifyListeners();
       },
@@ -61,6 +71,10 @@ class VoiceAgentController extends ChangeNotifier {
         if (_isDisposed) return;
         _userTranscript = text;
         _safeNotifyListeners();
+        // Server VAD detected end of speech, stop listening locally
+        if (_isListening) {
+          stopListening();
+        }
       },
       onAgentResponse: (text) {
         if (_isDisposed) return;
@@ -78,8 +92,54 @@ class VoiceAgentController extends ChangeNotifier {
         _status = "Error: $error";
         _isConnected = false;
         _safeNotifyListeners();
+        _attemptReconnect();
+      },
+      onDisconnect: (code, reason) {
+        if (_isDisposed) return;
+        _isConnected = false;
+
+        // Check for fatal errors
+        if (reason != null &&
+            (reason.toLowerCase().contains('quota') ||
+                reason.toLowerCase().contains('unauthorized'))) {
+          _status = "Error: $reason";
+          _safeNotifyListeners();
+          // Do NOT reconnect
+          return;
+        }
+
+        _status = "Desconectado";
+        _safeNotifyListeners();
+        _attemptReconnect();
       },
     );
+  }
+
+  void _attemptReconnect() {
+    if (_userInitiatedDisconnect || _isDisposed) return;
+
+    if (_reconnectAttempts < _maxReconnectAttempts) {
+      _reconnectAttempts++;
+      _status = "Reconectando ($_reconnectAttempts/$_maxReconnectAttempts)...";
+      _safeNotifyListeners();
+
+      _reconnectTimer = Timer(_reconnectDelay * _reconnectAttempts, () {
+        if (!_isDisposed && !_userInitiatedDisconnect) {
+          connect();
+        }
+      });
+    } else {
+      _status = "No se pudo reconectar. Intente manualmente.";
+      _safeNotifyListeners();
+    }
+  }
+
+  Future<void> toggleListening() async {
+    if (_isListening) {
+      await stopListening();
+    } else {
+      await startListening();
+    }
   }
 
   Future<void> startListening() async {
@@ -108,6 +168,8 @@ class VoiceAgentController extends ChangeNotifier {
   }
 
   Future<void> disconnect() async {
+    _userInitiatedDisconnect = true;
+    _reconnectTimer?.cancel();
     await stopListening();
     _elevenService.dispose();
     _isConnected = false;

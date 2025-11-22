@@ -25,12 +25,16 @@ class ElevenAgentService {
     void Function(String)? onAgentResponse,
     void Function(Uint8List)? onAudioChunk,
     void Function(String)? onError,
+    void Function(int? code, String? reason)? onDisconnect,
   }) async {
     this.onReady = onReady;
     this.onUserTranscript = onUserTranscript;
     this.onAgentResponse = onAgentResponse;
     this.onAudioChunk = onAudioChunk;
     this.onError = onError;
+
+    // Ensure previous connection is closed
+    _channel?.sink.close();
 
     try {
       final uri = Uri.parse(
@@ -47,30 +51,18 @@ class ElevenAgentService {
         (data) {
           _handleMessage(data);
         },
-        onError: (error) {
+        onError: (error, stackTrace) {
           print('WebSocket Error: $error');
+          print('Stack Trace: $stackTrace');
           this.onError?.call(error.toString());
         },
         onDone: () {
-          print(
-            'WebSocket Closed. Code: ${_channel?.closeCode}, Reason: ${_channel?.closeReason}',
-          );
+          final code = _channel?.closeCode;
+          final reason = _channel?.closeReason;
+          print('WebSocket Closed. Code: $code, Reason: $reason');
+          onDisconnect?.call(code, reason);
         },
       );
-
-      // Enviar mensaje de inicialización (opcional, pero recomendado)
-      // Esto configura el idioma y otros parámetros si es necesario
-      /*
-      final initMsg = {
-        "type": "conversation_initiation_client_data",
-        "conversation_config_override": {
-          "agent": {
-            "language": "es", 
-          }
-        }
-      };
-      _channel!.sink.add(jsonEncode(initMsg));
-      */
     } catch (e) {
       print('Connection Error: $e');
       this.onError?.call(e.toString());
@@ -121,7 +113,16 @@ class ElevenAgentService {
           break;
 
         case 'ping':
-          // Responder al ping si es necesario, aunque la librería suele manejarlo
+          final eventId = json['ping_event']?['event_id'];
+          print(
+            'ElevenAgentService: Received ping, sending pong (event_id: $eventId)',
+          );
+
+          final pongMsg = {
+            "type": "pong",
+            if (eventId != null) "event_id": eventId,
+          };
+          _channel?.sink.add(jsonEncode(pongMsg));
           break;
 
         default:
