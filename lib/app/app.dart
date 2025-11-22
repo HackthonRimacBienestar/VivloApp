@@ -17,12 +17,12 @@ class App extends StatelessWidget {
       title: 'RIMAC Contigo',
       debugShowCheckedModeBanner: false,
       theme: AppTheme.lightTheme,
-      initialRoute: AppRoutes.voiceAgent,
+      initialRoute: AppRoutes.login,
       routes: {
-       // AppRoutes.splash: (_) => const SplashPage(),
-       // AppRoutes.home: (_) => const HomeDashboardPage(),
-       AppRoutes.voiceAgent: (_) => const VoiceAgentPage(),
-        //AppRoutes.login: (_) => const LoginPage(),
+        // AppRoutes.splash: (_) => const SplashPage(),
+        // AppRoutes.home: (_) => const HomeDashboardPage(),
+        AppRoutes.voiceAgent: (_) => const VoiceAgentPage(),
+        AppRoutes.login: (_) => const LoginPage(),
         // Otras rutas se pueden agregar aquí o usar Navigator.push con MaterialPageRoute
       },
     );

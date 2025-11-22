@@ -29,8 +29,8 @@ android {
         versionCode = flutter.versionCode
         versionName = flutter.versionName
 
-        manifestPlaceholders["auth0Domain"] = "dev-frhmw1hf574bwgn3.us.auth0.com"
-        manifestPlaceholders["auth0Scheme"] = "https"
+        manifestPlaceholders["auth0Domain"] = "dev-w7xybxca7a6ecknz.us.auth0.com"
+        manifestPlaceholders["auth0Scheme"] = "followwell"
     }
 
     buildTypes {

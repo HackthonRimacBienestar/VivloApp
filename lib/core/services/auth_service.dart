@@ -1,8 +1,8 @@
 import 'package:auth0_flutter/auth0_flutter.dart';
 
 class AuthService {
-  static const _domain = 'dev-frhmw1hf574bwgn3.us.auth0.com';
-  static const _clientId = '7YJKGBDMw240qXTnzRu1oBbMQZIo16Q4';
+  static const _domain = 'dev-w7xybxca7a6ecknz.us.auth0.com';
+  static const _clientId = 'lWdqoyUXATcALJ6Di8VutUuapfAIdgRp';
 
   final _auth0 = Auth0(_domain, _clientId);
 
@@ -12,9 +12,9 @@ class AuthService {
 
   Future<Credentials?> login() async {
     try {
-      _credentials = await _auth0.webAuthentication().login(
-        scopes: {'openid', 'profile', 'email', 'offline_access'},
-      );
+      _credentials = await _auth0
+          .webAuthentication(scheme: 'followwell')
+          .login(scopes: {'openid', 'profile', 'email', 'offline_access'});
       return _credentials;
     } catch (e) {
       print('AuthService Login Error: $e');
@@ -22,9 +22,24 @@ class AuthService {
     }
   }
 
+  Future<Credentials?> register() async {
+    try {
+      _credentials = await _auth0
+          .webAuthentication(scheme: 'followwell')
+          .login(
+            scopes: {'openid', 'profile', 'email', 'offline_access'},
+            parameters: {'screen_hint': 'signup'},
+          );
+      return _credentials;
+    } catch (e) {
+      print('AuthService Register Error: $e');
+      rethrow;
+    }
+  }
+
   Future<void> logout() async {
     try {
-      await _auth0.webAuthentication().logout();
+      await _auth0.webAuthentication(scheme: 'followwell').logout();
       _credentials = null;
     } catch (e) {
       print('AuthService Logout Error: $e');

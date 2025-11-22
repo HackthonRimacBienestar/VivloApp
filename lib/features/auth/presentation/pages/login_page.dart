@@ -34,6 +34,27 @@ class _LoginPageState extends State<LoginPage> {
     }
   }
 
+  Future<void> _register() async {
+    setState(() => _isLoading = true);
+    try {
+      await _auth.register();
+      setState(() {});
+      // Navegar al agente después del registro exitoso
+      if (mounted) {
+        Navigator.pushReplacementNamed(context, AppRoutes.voiceAgent);
+      }
+    } catch (e) {
+      debugPrint('Error registro: $e');
+      if (mounted) {
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text('Error al registrarse: $e')));
+      }
+    } finally {
+      if (mounted) setState(() => _isLoading = false);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final user = _auth.credentials?.user;
@@ -44,9 +65,19 @@ class _LoginPageState extends State<LoginPage> {
         child: _isLoading
             ? const CircularProgressIndicator()
             : _auth.credentials == null
-            ? ElevatedButton(
-                onPressed: _login,
-                child: const Text('Iniciar sesión'),
+            ? Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  ElevatedButton(
+                    onPressed: _login,
+                    child: const Text('Iniciar sesión'),
+                  ),
+                  const SizedBox(height: 16),
+                  ElevatedButton(
+                    onPressed: _register,
+                    child: const Text('Registrarse'),
+                  ),
+                ],
               )
             : Column(
                 mainAxisSize: MainAxisSize.min,
