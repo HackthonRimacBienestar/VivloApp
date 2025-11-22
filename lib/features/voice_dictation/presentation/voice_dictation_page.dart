@@ -14,7 +14,7 @@ class _VoiceDictationPageState extends State<VoiceDictationPage> {
   late VoiceDictationController _controller;
   final TextEditingController _textEditingController = TextEditingController();
 
-  final String _apiKey = 'sk_0417208ccf92429c354188237a040542da4d495104accf09';
+  final String _apiKey = 'sk_d7404fc5d2fae007e261700456169fae996ea7800f00b719';
 
   @override
   void initState() {

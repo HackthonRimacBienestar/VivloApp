@@ -19,9 +19,9 @@ class App extends StatelessWidget {
       theme: AppTheme.lightTheme,
       initialRoute: AppRoutes.voiceAgent,
       routes: {
-       // AppRoutes.splash: (_) => const SplashPage(),
-       // AppRoutes.home: (_) => const HomeDashboardPage(),
-       AppRoutes.voiceAgent: (_) => const VoiceAgentPage(),
+        // AppRoutes.splash: (_) => const SplashPage(),
+        // AppRoutes.home: (_) => const HomeDashboardPage(),
+        AppRoutes.voiceAgent: (_) => const VoiceAgentPage(),
         //AppRoutes.login: (_) => const LoginPage(),
         // Otras rutas se pueden agregar aquí o usar Navigator.push con MaterialPageRoute
       },
