@@ -52,7 +52,9 @@ class ElevenAgentService {
           this.onError?.call(error.toString());
         },
         onDone: () {
-          print('WebSocket Closed');
+          print(
+            'WebSocket Closed. Code: ${_channel?.closeCode}, Reason: ${_channel?.closeReason}',
+          );
         },
       );
 
