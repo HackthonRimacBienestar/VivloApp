@@ -23,8 +23,8 @@ class RewardsCarousel extends StatelessWidget {
                 color: AppColors.ink,
               ),
             ),
-            FutureBuilder<Profile?>(
-              future: ProfileRepository().getMyProfile(),
+            StreamBuilder<Profile?>(
+              stream: ProfileRepository().streamMyProfile(),
               builder: (context, snapshot) {
                 final points = snapshot.data?.pointsBalance ?? 0;
                 return Row(
@@ -231,79 +231,50 @@ class _RewardCardState extends State<_RewardCard>
                       decoration: BoxDecoration(
                         color: widget.imagePath != null
                             ? Colors.transparent
-                            : widget.color.withOpacity(0.08),
-                        borderRadius: BorderRadius.circular(14),
+                            : widget.color.withOpacity(0.1),
+                        borderRadius: BorderRadius.circular(16),
                       ),
+                      alignment: Alignment.center,
                       child: widget.imagePath != null
-                          ? ClipRRect(
-                              borderRadius: BorderRadius.circular(14),
-                              child: Image.asset(
-                                widget.imagePath!,
-                                fit: BoxFit.cover,
-                                width: double.infinity,
-                              ),
-                            )
-                          : Center(
-                              child: Icon(
-                                widget.icon,
-                                color: widget.color,
-                                size: 22,
-                              ),
-                            ),
+                          ? Image.asset(widget.imagePath!, fit: BoxFit.contain)
+                          : Icon(widget.icon, color: widget.color, size: 32),
                     ),
-                    const Spacer(),
-                    // Title
+                    const SizedBox(height: 16),
                     Text(
                       widget.title,
-                      style: AppTypography.bodySmall.copyWith(
-                        fontWeight: FontWeight.w700,
-                        color: AppColors.ink,
+                      style: AppTypography.body.copyWith(
+                        fontWeight: FontWeight.bold,
                         height: 1.2,
-                        fontSize: 13,
                       ),
                       maxLines: 2,
                       overflow: TextOverflow.ellipsis,
                     ),
                     const SizedBox(height: 4),
-                    // Description
                     Text(
                       widget.description,
                       style: AppTypography.caption.copyWith(
-                        color: AppColors.inkMuted,
-                        fontSize: 11,
+                        color: AppColors.inkSoft,
                       ),
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                     ),
-                    const SizedBox(height: 10),
-                    // Points chip
+                    const SizedBox(height: 12),
                     Container(
                       padding: const EdgeInsets.symmetric(
                         horizontal: 10,
                         vertical: 4,
                       ),
                       decoration: BoxDecoration(
-                        color: AppColors.surfaceMuted,
-                        borderRadius: BorderRadius.circular(20),
+                        color: widget.color.withOpacity(0.1),
+                        borderRadius: BorderRadius.circular(12),
                       ),
-                      child: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Icon(
-                            Icons.stars_rounded,
-                            color: widget.color,
-                            size: 14,
-                          ),
-                          const SizedBox(width: 4),
-                          Text(
-                            widget.points,
-                            style: TextStyle(
-                              color: AppColors.ink,
-                              fontWeight: FontWeight.w700,
-                              fontSize: 11,
-                            ),
-                          ),
-                        ],
+                      child: Text(
+                        widget.points,
+                        style: TextStyle(
+                          color: widget.color,
+                          fontSize: 12,
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
                     ),
                   ],

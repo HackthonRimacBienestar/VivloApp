@@ -51,8 +51,8 @@ class _HealthScoreCardState extends State<HealthScoreCard>
 
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder<Profile?>(
-      future: ProfileRepository().getMyProfile(),
+    return StreamBuilder<Profile?>(
+      stream: ProfileRepository().streamMyProfile(),
       builder: (context, snapshot) {
         final score = snapshot.data?.pointsBalance ?? 0;
 

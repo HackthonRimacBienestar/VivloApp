@@ -47,13 +47,16 @@ class _HomePageState extends State<HomePage> {
         unselectedItemColor: AppColors.inkMuted,
         showUnselectedLabels: true,
         items: const [
-          BottomNavigationBarItem(icon: Icon(Icons.home_filled), label: 'Home'),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.home_filled),
+            label: 'Inicio',
+          ),
           BottomNavigationBarItem(icon: Icon(Icons.mic), label: 'Vivlo'),
           BottomNavigationBarItem(
             icon: Icon(Icons.rocket_launch),
-            label: 'Mission',
+            label: 'Misiones',
           ),
-          BottomNavigationBarItem(icon: Icon(Icons.people), label: 'Community'),
+          BottomNavigationBarItem(icon: Icon(Icons.people), label: 'Comunidad'),
         ],
       ),
     );

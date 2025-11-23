@@ -24,6 +24,17 @@ class ProfileRepository {
     }
   }
 
+  Stream<Profile?> streamMyProfile() {
+    final userId = _authService.currentUser?.id;
+    if (userId == null) return Stream.value(null);
+
+    return _supabase
+        .from('profiles')
+        .stream(primaryKey: ['id'])
+        .eq('id', userId)
+        .map((data) => data.isEmpty ? null : Profile.fromJson(data.first));
+  }
+
   Future<void> updateProfile(Profile profile) async {
     final userId = _authService.currentUser?.id;
     if (userId == null) return;
