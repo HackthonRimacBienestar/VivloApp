@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'dart:ui';
-import '../../../../core/ui/widgets/app_scaffold.dart';
 import '../../../../core/ui/widgets/widgets.dart';
 import '../../../../core/ui/theme/colors.dart';
 import '../../../../core/ui/theme/gradients.dart';

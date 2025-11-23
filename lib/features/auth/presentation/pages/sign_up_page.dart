@@ -1,9 +1,6 @@
 import 'package:flutter/material.dart';
-import 'dart:ui';
 import 'package:flutter_svg/flutter_svg.dart';
-import '../../../../core/ui/widgets/app_scaffold.dart';
 import '../../../../core/ui/widgets/widgets.dart';
-import '../../../../core/ui/widgets/jobsly_wordmark.dart';
 import '../../../../core/ui/theme/colors.dart';
 import '../../../../core/ui/theme/gradients.dart';
 import '../../../../core/ui/theme/spacing.dart';

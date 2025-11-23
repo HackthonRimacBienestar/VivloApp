@@ -18,12 +18,10 @@ class AppTheme {
         secondary: AppColors.secondary,
         error: AppColors.error,
         surface: AppColors.surface,
-        background: AppColors.background,
         onPrimary: AppColors.onPrimary,
         onSecondary: AppColors.onPrimary,
         onError: AppColors.onError,
         onSurface: AppColors.onSurface,
-        onBackground: AppColors.onBackground,
       ),
       textTheme: const TextTheme(
         displayLarge: AppTypography.displayL,

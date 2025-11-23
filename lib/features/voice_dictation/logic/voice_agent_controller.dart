@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:sound_stream/sound_stream.dart';
 import '../../../core/services/audio_recorder_service.dart';

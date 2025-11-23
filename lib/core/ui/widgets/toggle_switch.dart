@@ -13,7 +13,7 @@ class AppToggleSwitch extends StatelessWidget {
     return Switch(
       value: value,
       onChanged: onChanged,
-      activeColor: AppColors.accentPrimary,
+      activeThumbColor: AppColors.accentPrimary,
       trackOutlineColor: WidgetStateProperty.all(AppColors.surfaceHint),
     );
   }
