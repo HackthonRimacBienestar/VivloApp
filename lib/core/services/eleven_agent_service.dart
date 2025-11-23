@@ -12,6 +12,7 @@ class ElevenAgentService {
 
   // Callbacks
   void Function()? onReady;
+  void Function(String conversationId)? onSessionStarted;
   void Function(String text)? onUserTranscript;
   void Function(String text)? onAgentResponse;
   void Function(Uint8List audioBytes)? onAudioChunk;
@@ -21,6 +22,7 @@ class ElevenAgentService {
 
   Future<void> connect({
     void Function()? onReady,
+    void Function(String)? onSessionStarted,
     void Function(String)? onUserTranscript,
     void Function(String)? onAgentResponse,
     void Function(Uint8List)? onAudioChunk,
@@ -28,6 +30,7 @@ class ElevenAgentService {
     void Function(int? code, String? reason)? onDisconnect,
   }) async {
     this.onReady = onReady;
+    this.onSessionStarted = onSessionStarted;
     this.onUserTranscript = onUserTranscript;
     this.onAgentResponse = onAgentResponse;
     this.onAudioChunk = onAudioChunk;
@@ -76,7 +79,10 @@ class ElevenAgentService {
 
       switch (type) {
         case 'conversation_initiation_metadata':
-          print('Session Started: ${json['conversation_id']}');
+          final conversationId =
+              json['conversation_initiation_metadata_event']['conversation_id'];
+          print('Session Started: $conversationId');
+          onSessionStarted?.call(conversationId);
           onReady?.call();
           break;
 

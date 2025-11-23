@@ -3,11 +3,13 @@ import 'package:flutter/material.dart';
 import 'package:sound_stream/sound_stream.dart';
 import '../../../core/services/audio_recorder_service.dart';
 import '../../../core/services/eleven_agent_service.dart';
+import '../data/voice_data_repository.dart';
 
 class VoiceAgentController extends ChangeNotifier {
   final ElevenAgentService _elevenService;
   final AudioRecorderService _audioRecorder;
   final PlayerStream _player = PlayerStream();
+  final VoiceDataRepository _repository = VoiceDataRepository();
 
   StreamSubscription? _micSubscription;
 
@@ -18,6 +20,7 @@ class VoiceAgentController extends ChangeNotifier {
   String _userTranscript = "";
   String _agentResponse = "";
   String _status = "Desconectado";
+  String? _currentConversationId;
 
   bool _isDisposed = false;
 
@@ -70,9 +73,20 @@ class VoiceAgentController extends ChangeNotifier {
         _status = "Conectado";
         _safeNotifyListeners();
       },
+      onSessionStarted: (conversationId) {
+        _currentConversationId = conversationId;
+        _repository.createConversation(conversationId);
+      },
       onUserTranscript: (text) {
         if (_isDisposed) return;
         _userTranscript = text;
+        if (_currentConversationId != null) {
+          _repository.addMessage(
+            conversationId: _currentConversationId!,
+            role: 'user',
+            content: text,
+          );
+        }
         _safeNotifyListeners();
         // Server VAD detected end of speech, stop listening locally
         if (_isListening) {
@@ -82,6 +96,13 @@ class VoiceAgentController extends ChangeNotifier {
       onAgentResponse: (text) {
         if (_isDisposed) return;
         _agentResponse = text;
+        if (_currentConversationId != null) {
+          _repository.addMessage(
+            conversationId: _currentConversationId!,
+            role: 'agent',
+            content: text,
+          );
+        }
         _status = "Conectado"; // Reset status to ready
         _safeNotifyListeners();
       },

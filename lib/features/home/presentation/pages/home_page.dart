@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:follow_well/features/missions/presentation/missions_page.dart';
 import '../../../../core/ui/theme/colors.dart';
 import '../../../../core/ui/widgets/app_scaffold.dart';
 import '../../../voice_dictation/presentation/voice_agent_page.dart';
@@ -26,7 +27,7 @@ class _HomePageState extends State<HomePage> {
           });
         },
       ),
-      const Center(child: Text('Mission Engine')),
+      const MissionsPage(),
       const CommunityPage(),
     ];
 

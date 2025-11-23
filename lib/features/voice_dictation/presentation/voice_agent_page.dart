@@ -26,8 +26,8 @@ class _VoiceAgentPageState extends State<VoiceAgentPage>
   late Animation<double> _mascotPulseAnimation;
 
   // TODO: Mover a variables de entorno o almacenamiento seguro
-  final String _apiKey = 'sk_d7404fc5d2fae007e261700456169fae996ea7800f00b719';
-  final String _agentId = 'agent_9001kam6k6aqesna12cggeg5py44';
+  final String _apiKey = 'sk_a06e4f81b4bcb8600c270ab2fb9fc3e72b652927b86fd1bf';
+  final String _agentId = 'agent_4301kajakpqjew6rg5744f1aj93k';
 
   @override
   void initState() {
@@ -159,7 +159,6 @@ class _VoiceAgentPageState extends State<VoiceAgentPage>
             color: Colors.white.withOpacity(0.5),
             shape: BoxShape.circle,
           ),
-          child: const Icon(Icons.arrow_back, color: AppColors.ink, size: 20),
         ),
         onPressed: () {
           if (widget.onBackPressed != null) {
@@ -174,7 +173,7 @@ class _VoiceAgentPageState extends State<VoiceAgentPage>
       title: Column(
         children: [
           Text(
-            'Soporte por voz',
+            'Vivlo',
             style: AppTypography.subtitle.copyWith(
               color: AppColors.ink,
               fontWeight: FontWeight.w700,
@@ -393,7 +392,7 @@ class _VoiceAgentPageState extends State<VoiceAgentPage>
 
   String _getHelpText() {
     if (!_controller.isConnected) {
-      return 'Conectando con soporte...';
+      return 'Conectando con Vivlo...';
     }
     if (_controller.isListening) {
       return 'Escuchando...';
