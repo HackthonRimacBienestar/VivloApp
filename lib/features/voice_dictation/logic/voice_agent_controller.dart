@@ -15,6 +15,7 @@ class VoiceAgentController extends ChangeNotifier {
   // State
   bool _isConnected = false;
   bool _isListening = false;
+  bool _isAgentSpeaking = false;
   String _userTranscript = "";
   String _agentResponse = "";
   String _status = "Desconectado";
@@ -26,10 +27,13 @@ class VoiceAgentController extends ChangeNotifier {
   static const int _maxReconnectAttempts = 5;
   static const Duration _reconnectDelay = Duration(seconds: 2);
   Timer? _reconnectTimer;
+  Timer? _agentSpeakingTimer;
+  static const Duration _agentSpeakingGrace = Duration(milliseconds: 350);
 
   // Getters
   bool get isConnected => _isConnected;
   bool get isListening => _isListening;
+  bool get isAgentSpeaking => _isAgentSpeaking;
   String get userTranscript => _userTranscript;
   String get agentResponse => _agentResponse;
   String get status => _status;
@@ -86,6 +90,7 @@ class VoiceAgentController extends ChangeNotifier {
         if (_isDisposed) return;
         print('VoiceAgentController: Writing ${bytes.length} bytes to player');
         _player.writeChunk(bytes);
+        _handleAgentSpeakingActivity();
       },
       onError: (error) {
         if (_isDisposed) return;
@@ -113,6 +118,25 @@ class VoiceAgentController extends ChangeNotifier {
         _attemptReconnect();
       },
     );
+  }
+
+  void _handleAgentSpeakingActivity() {
+    bool shouldNotify = false;
+
+    if (!_isAgentSpeaking) {
+      _isAgentSpeaking = true;
+      shouldNotify = true;
+    }
+
+    _agentSpeakingTimer?.cancel();
+    _agentSpeakingTimer = Timer(_agentSpeakingGrace, () {
+      _isAgentSpeaking = false;
+      _safeNotifyListeners();
+    });
+
+    if (shouldNotify) {
+      _safeNotifyListeners();
+    }
   }
 
   void _attemptReconnect() {
@@ -146,6 +170,7 @@ class VoiceAgentController extends ChangeNotifier {
     if (!_isConnected) return;
 
     _isListening = true;
+    _isAgentSpeaking = false;
     _status = "Escuchando...";
     _safeNotifyListeners();
 
@@ -159,6 +184,7 @@ class VoiceAgentController extends ChangeNotifier {
 
   Future<void> stopListening() async {
     _isListening = false;
+    _isAgentSpeaking = false;
     _status = "Procesando...";
     _safeNotifyListeners();
 
@@ -170,6 +196,7 @@ class VoiceAgentController extends ChangeNotifier {
   Future<void> disconnect() async {
     _userInitiatedDisconnect = true;
     _reconnectTimer?.cancel();
+    _agentSpeakingTimer?.cancel();
     await stopListening();
     _elevenService.dispose();
     _isConnected = false;
@@ -183,6 +210,7 @@ class VoiceAgentController extends ChangeNotifier {
     disconnect();
     _audioRecorder.dispose();
     _player.dispose();
+    _agentSpeakingTimer?.cancel();
     super.dispose();
   }
 }

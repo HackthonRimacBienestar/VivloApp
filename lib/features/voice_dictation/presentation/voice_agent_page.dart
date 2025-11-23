@@ -72,6 +72,13 @@ class _VoiceAgentPageState extends State<VoiceAgentPage>
     await Permission.microphone.request();
     _controller.connect();
   }
+  
+  String _getMascotAsset() {
+    if (_controller.isAgentSpeaking) {
+      return 'assets/osito2sinfondo.png';
+    }
+    return 'assets/osito1sinfondo.png';
+  }
 
   void _onControllerUpdate() {
     setState(() {});
@@ -254,15 +261,22 @@ class _VoiceAgentPageState extends State<VoiceAgentPage>
                 AnimatedBuilder(
                   animation: _mascotAnimationController,
                   builder: (context, child) {
+                    final mascotAsset = _getMascotAsset();
                     return Transform.translate(
                       offset: Offset(0, -_mascotBounceAnimation.value),
                       child: Transform.scale(
                         scale: _mascotPulseAnimation.value,
-                        child: Image.asset(
-                          'assets/ROBOTSITO1.png',
-                          height: 200,
-                          width: 200,
-                          fit: BoxFit.contain,
+                        child: AnimatedSwitcher(
+                          duration: const Duration(milliseconds: 220),
+                          switchInCurve: Curves.easeOut,
+                          switchOutCurve: Curves.easeIn,
+                          child: Image.asset(
+                            mascotAsset,
+                            key: ValueKey(mascotAsset),
+                            height: 200,
+                            width: 200,
+                            fit: BoxFit.contain,
+                          ),
                         ),
                       ),
                     );
@@ -324,7 +338,6 @@ class _VoiceAgentPageState extends State<VoiceAgentPage>
 
           // Disclaimer discreto en la parte inferior
           const SizedBox(height: 16),
-        
         ],
       ),
     );
