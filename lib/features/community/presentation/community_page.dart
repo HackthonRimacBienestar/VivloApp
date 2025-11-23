@@ -11,7 +11,7 @@ class CommunityPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.surfaceMuted,
+      backgroundColor: const Color(0xFFF8F9FB),
       body: SafeArea(
         child: SingleChildScrollView(
           padding: const EdgeInsets.symmetric(
@@ -21,15 +21,15 @@ class CommunityPage extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              _CommunityHeader(),
-              SizedBox(height: AppSpacing.xl),
-              _AmbientSupportCard(),
-              SizedBox(height: AppSpacing.xl),
-              _FiltersSection(),
-              SizedBox(height: AppSpacing.xl),
-              _GroupsSection(),
-              SizedBox(height: AppSpacing.xl),
-              _CirclesSection(),
+              const _CommunityHeader(),
+              const SizedBox(height: 28),
+              const _AmbientSupportCard(),
+              const SizedBox(height: 32),
+              const _FiltersSection(),
+              const SizedBox(height: 32),
+              const _GroupsSection(),
+              const SizedBox(height: 32),
+              const _CirclesSection(),
             ],
           ),
         ),
@@ -48,12 +48,25 @@ class _CommunityHeader extends StatelessWidget {
       children: [
         Text(
           'Tu comunidad',
-          style: AppTypography.displayM.copyWith(color: AppColors.ink),
+          style: TextStyle(
+            fontFamily: 'Plus Jakarta Sans',
+            fontSize: 32,
+            fontWeight: FontWeight.w800,
+            color: AppColors.ink,
+            letterSpacing: -0.5,
+            height: 1.2,
+          ),
         ),
-        const SizedBox(height: AppSpacing.sm),
+        const SizedBox(height: 12),
         Text(
           'Comparte avances, dudas y pequeños triunfos con personas que entienden tu ritmo.',
-          style: AppTypography.body.copyWith(color: AppColors.inkSoft),
+          style: TextStyle(
+            fontFamily: 'Plus Jakarta Sans',
+            fontSize: 16,
+            color: AppColors.inkSoft,
+            height: 1.5,
+            letterSpacing: 0.1,
+          ),
         ),
       ],
     );
@@ -66,54 +79,125 @@ class _AmbientSupportCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.all(AppSpacing.xl),
+      padding: const EdgeInsets.all(24),
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(AppSpacing.hero / 2),
+        borderRadius: BorderRadius.circular(24),
         gradient: const LinearGradient(
-          colors: [AppColors.flareRed, AppColors.emberOrange],
+          colors: [
+            Color(0xFFE60023),
+            Color(0xFFFF0000),
+            Color(0xFFDC143C),
+          ],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
         ),
-        boxShadow: const [
+        boxShadow: [
           BoxShadow(
-            color: Color.fromARGB(30, 247, 5, 45),
-            blurRadius: 20,
-            offset: Offset(0, 10),
+            color: const Color(0xFFE60023).withOpacity(0.4),
+            blurRadius: 32,
+            spreadRadius: 2,
+            offset: const Offset(0, 12),
+          ),
+          BoxShadow(
+            color: const Color(0xFFFF0000).withOpacity(0.3),
+            blurRadius: 16,
+            offset: const Offset(0, 6),
           ),
         ],
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
-            'Círculo seguro',
-            style: AppTypography.caption.copyWith(
-              color: AppColors.pureWhite.withOpacity(0.8),
-              letterSpacing: 0.4,
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+            decoration: BoxDecoration(
+              color: Colors.white.withOpacity(0.2),
+              borderRadius: BorderRadius.circular(20),
+              border: Border.all(color: Colors.white.withOpacity(0.3)),
+            ),
+            child: Text(
+              'Círculo seguro',
+              style: TextStyle(
+                fontFamily: 'Plus Jakarta Sans',
+                fontSize: 11,
+                fontWeight: FontWeight.w600,
+                color: Colors.white,
+                letterSpacing: 0.5,
+              ),
             ),
           ),
-          const SizedBox(height: AppSpacing.xs),
+          const SizedBox(height: 12),
           Text(
             'Conversaciones guiadas cada noche con especialistas y pacientes referentes.',
-            style: AppTypography.title.copyWith(color: AppColors.pureWhite),
+            style: TextStyle(
+              fontFamily: 'Plus Jakarta Sans',
+              fontSize: 18,
+              fontWeight: FontWeight.w700,
+              color: Colors.white,
+              height: 1.4,
+              letterSpacing: -0.2,
+            ),
           ),
-          const SizedBox(height: AppSpacing.md),
+          const SizedBox(height: 20),
           Row(
             children: [
-              Icon(Icons.waves_rounded, color: AppColors.pureWhite.withOpacity(0.8)),
-              const SizedBox(width: AppSpacing.sm),
+              Container(
+                padding: const EdgeInsets.all(6),
+                decoration: BoxDecoration(
+                  color: Colors.white.withOpacity(0.2),
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                child: Icon(Icons.waves_rounded, color: Colors.white, size: 18),
+              ),
+              const SizedBox(width: 10),
               Text(
                 'Sintoniza hoy 20:00',
-                style: AppTypography.bodySmall.copyWith(color: AppColors.pureWhite),
+                style: TextStyle(
+                  fontFamily: 'Plus Jakarta Sans',
+                  fontSize: 14,
+                  fontWeight: FontWeight.w600,
+                  color: Colors.white.withOpacity(0.95),
+                ),
               ),
               const Spacer(),
-              TextButton(
-                onPressed: () {},
-                style: TextButton.styleFrom(
-                  foregroundColor: AppColors.pureWhite,
-                  textStyle: AppTypography.button,
+              Container(
+                decoration: BoxDecoration(
+                  gradient: const LinearGradient(
+                    colors: [Color(0xFFFFFFFF), Color(0xFFFFFFFF)],
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                  ),
+                  borderRadius: BorderRadius.circular(12),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.white.withOpacity(0.4),
+                      blurRadius: 12,
+                      offset: const Offset(0, 4),
+                    ),
+                  ],
                 ),
-                child: const Text('Reservar cupo'),
+                child: Material(
+                  color: Colors.transparent,
+                  child: InkWell(
+                    onTap: () {},
+                    borderRadius: BorderRadius.circular(12),
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 16,
+                        vertical: 10,
+                      ),
+                      child: Text(
+                        'Reservar cupo',
+                        style: TextStyle(
+                          fontFamily: 'Plus Jakarta Sans',
+                          fontSize: 14,
+                          fontWeight: FontWeight.w700,
+                          color: const Color(0xFFE60023),
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
               ),
             ],
           ),
@@ -141,12 +225,18 @@ class _FiltersSection extends StatelessWidget {
       children: [
         Text(
           'Explora círculos activos',
-          style: AppTypography.subtitle.copyWith(color: AppColors.ink),
+          style: TextStyle(
+            fontFamily: 'Plus Jakarta Sans',
+            fontSize: 18,
+            fontWeight: FontWeight.w700,
+            color: AppColors.ink,
+            letterSpacing: -0.2,
+          ),
         ),
-        const SizedBox(height: AppSpacing.sm),
+        const SizedBox(height: 16),
         Wrap(
-          spacing: AppSpacing.sm,
-          runSpacing: AppSpacing.sm,
+          spacing: 10,
+          runSpacing: 10,
           children: _filters
               .map(
                 (filter) => _CommunityFilterChip(
@@ -161,247 +251,38 @@ class _FiltersSection extends StatelessWidget {
   }
 }
 
-class _CommunityFilterChip extends StatelessWidget {
+class _CommunityFilterChip extends StatefulWidget {
   final String label;
   final bool selected;
 
   const _CommunityFilterChip({required this.label, this.selected = false});
 
   @override
-  Widget build(BuildContext context) {
-    return AnimatedContainer(
-      duration: const Duration(milliseconds: 220),
-      padding: const EdgeInsets.symmetric(
-        horizontal: AppSpacing.md,
-        vertical: AppSpacing.xs,
-      ),
-      decoration: BoxDecoration(
-        color: selected ? AppColors.surface : AppColors.surfaceHint,
-        borderRadius: BorderRadius.circular(AppSpacing.hero),
-        border: Border.all(
-          color: selected ? AppColors.accentPrimary : AppColors.line,
-        ),
-      ),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Icon(
-            Icons.favorite_rounded,
-            size: 16,
-            color: selected ? AppColors.accentPrimary : AppColors.inkSoft,
-          ),
-          const SizedBox(width: AppSpacing.xs),
-          Text(
-            label,
-            style: AppTypography.bodySmall.copyWith(
-              color: selected ? AppColors.accentPrimary : AppColors.ink,
-              fontWeight: selected ? FontWeight.w600 : FontWeight.w400,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
+  State<_CommunityFilterChip> createState() => _CommunityFilterChipState();
 }
 
-class _GroupsSection extends StatelessWidget {
-  const _GroupsSection();
-
-  static const _groups = [
-    CommunityGroup(
-      name: 'Glucosa Serena',
-      description: 'Chequeos diarios, recetas sencillas y alertas de hipoglucemia.',
-      membersOnline: 28,
-      totalMembers: 214,
-      tone: 'Noches calmadas, hábitos sostenibles',
-      icon: Icons.water_drop,
-      accent: AppColors.accentSecondary,
-    ),
-    CommunityGroup(
-      name: 'Ritmo Cardiaco',
-      description: 'Personas con hipertensión comparten rutinas y recordatorios.',
-      membersOnline: 14,
-      totalMembers: 140,
-      tone: 'Respira, registra y reconoce tus logros',
-      icon: Icons.favorite,
-      accent: AppColors.accentInfo,
-    ),
-    CommunityGroup(
-      name: 'Nube Clara',
-      description: 'Espacio mixto para salud mental y acompañamiento emocional.',
-      membersOnline: 21,
-      totalMembers: 310,
-      tone: 'Moderado por psicólogos invitados cada semana',
-      icon: Icons.self_improvement,
-      accent: AppColors.statusSuccess,
-    ),
-  ];
+class _CommunityFilterChipState extends State<_CommunityFilterChip> {
+  bool _isPressed = false;
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          'Chats destacados',
-          style: AppTypography.subtitle.copyWith(color: AppColors.ink),
-        ),
-        const SizedBox(height: AppSpacing.md),
-        ..._groups
-            .map(
-              (group) => Padding(
-                padding: const EdgeInsets.only(bottom: AppSpacing.md),
-                child: _GroupCard(
-                  group: group,
-                  onTap: () {
-                    Navigator.of(context).push(
-                      MaterialPageRoute(
-                        builder: (_) => CommunityChatPage(group: group),
-                      ),
-                    );
-                  },
-                ),
-              ),
-            )
-            .toList(),
-      ],
-    );
-  }
-}
-
-class _GroupCard extends StatelessWidget {
-  final CommunityGroup group;
-  final VoidCallback onTap;
-
-  const _GroupCard({required this.group, required this.onTap});
-
-  @override
-  Widget build(BuildContext context) {
-    return InkWell(
-      onTap: onTap,
-      borderRadius: BorderRadius.circular(AppSpacing.cardInternalPadding),
-      child: Container(
-        padding: const EdgeInsets.all(AppSpacing.lg),
-        decoration: BoxDecoration(
-          color: AppColors.surface,
-          borderRadius: BorderRadius.circular(AppSpacing.cardInternalPadding),
-          border: Border.all(color: AppColors.line),
-          boxShadow: const [
-            BoxShadow(
-              color: Color.fromARGB(12, 0, 0, 0),
-              blurRadius: 16,
-              offset: Offset(0, 4),
-            ),
-          ],
-        ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Container(
-                  height: 52,
-                  width: 52,
-                  decoration: BoxDecoration(
-                    color: group.accent.withOpacity(0.2),
-                    borderRadius: BorderRadius.circular(AppSpacing.sm),
-                  ),
-                  child: Icon(group.icon, color: group.accent),
-                ),
-                const SizedBox(width: AppSpacing.md),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Row(
-                        children: [
-                          Expanded(
-                            child: Text(
-                              group.name,
-                              style: AppTypography.title.copyWith(color: AppColors.ink),
-                            ),
-                          ),
-                          _Badge(label: '${group.membersOnline} en línea'),
-                        ],
-                      ),
-                      const SizedBox(height: AppSpacing.xs),
-                      Text(
-                        group.description,
-                        style: AppTypography.bodySmall.copyWith(color: AppColors.inkSoft),
-                      ),
-                      const SizedBox(height: AppSpacing.sm),
-                      Text(
-                        group.tone,
-                        style: AppTypography.caption.copyWith(color: AppColors.inkMuted),
-                      ),
-                      const SizedBox(height: AppSpacing.sm),
-                      Row(
-                        children: [
-                          Icon(Icons.people_outline, size: 16, color: AppColors.inkSoft),
-                          const SizedBox(width: AppSpacing.xs),
-                          Text(
-                            '${group.totalMembers} miembros',
-                            style: AppTypography.caption.copyWith(color: AppColors.inkSoft),
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
-                ),
-              ],
-            ),
-            const SizedBox(height: AppSpacing.md),
-            Row(
-              children: [
-                const Spacer(),
-                Icon(Icons.chevron_right, color: AppColors.inkMuted),
-                const SizedBox(width: AppSpacing.sm),
-                FilledButton(
-                  onPressed: onTap,
-                  style: FilledButton.styleFrom(
-                    backgroundColor: AppColors.accentPrimary,
-                    shape: const StadiumBorder(),
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: AppSpacing.md,
-                      vertical: AppSpacing.xs,
-                    ),
-                  ),
-                  child: Text(
-                    'Entrar',
-                    style: AppTypography.button.copyWith(color: AppColors.surface),
-                  ),
-                ),
-              ],
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-class _Badge extends StatelessWidget {
-  final String label;
-
-  const _Badge({required this.label});
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.symmetric(
-        horizontal: AppSpacing.sm,
-        vertical: AppSpacing.xxs,
-      ),
-      decoration: BoxDecoration(
-        color: AppColors.accentHighlight,
-        borderRadius: BorderRadius.circular(AppSpacing.hero),
-      ),
-      child: Text(
-        label,
-        style: AppTypography.caption.copyWith(color: AppColors.accentSecondary),
-      ),
-    );
+    return AnimatedScale(
+      scale: _isPressed ? 0.95 : 1.0,
+      duration: const Duration(milliseconds: 150),
+      child: GestureDetector(
+        onTapDown: (_) => setState(() => _isPressed = true),
+        onTapUp: (_) => setState(() => _isPressed = false),
+        onTapCancel: () => setState(() => _isPressed = false),
+        child: AnimatedContainer(
+          duration: const Duration(milliseconds: 250),
+          curve: Curves.easeOutCubic,
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+          decoration: BoxDecoration(
+            gradient: widget.selected
+                ? const LinearGradient(
+                    colors: [Color(0xFFE60023), Color(0xFFFF0000)],
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
   }
 }
 
@@ -433,20 +314,34 @@ class _CirclesSection extends StatelessWidget {
             Expanded(
               child: Text(
                 'Próximos círculos guiados',
-                style: AppTypography.subtitle.copyWith(color: AppColors.ink),
+                style: TextStyle(
+                  fontFamily: 'Plus Jakarta Sans',
+                  fontSize: 18,
+                  fontWeight: FontWeight.w700,
+                  color: AppColors.ink,
+                  letterSpacing: -0.2,
+                ),
               ),
             ),
             TextButton(
               onPressed: () {},
-              child: const Text('Ver agenda completa'),
+              child: Text(
+                'Ver agenda',
+                style: TextStyle(
+                  fontFamily: 'Plus Jakarta Sans',
+                  fontSize: 14,
+                  fontWeight: FontWeight.w600,
+                  color: const Color(0xFFE60023),
+                ),
+              ),
             ),
           ],
         ),
-        const SizedBox(height: AppSpacing.md),
+        const SizedBox(height: 18),
         ..._sessions
             .map(
               (session) => Padding(
-                padding: const EdgeInsets.only(bottom: AppSpacing.md),
+                padding: const EdgeInsets.only(bottom: 16),
                 child: _CircleCard(session: session),
               ),
             )
@@ -464,113 +359,185 @@ class _CircleCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.all(AppSpacing.lg),
+      padding: const EdgeInsets.all(18),
       decoration: BoxDecoration(
-        color: AppColors.surface,
-        borderRadius: BorderRadius.circular(AppSpacing.xl),
-        border: Border.all(color: AppColors.line),
+        gradient: const LinearGradient(
+          colors: [Colors.white, Color(0xFFFFFBFD)],
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+        ),
+        borderRadius: BorderRadius.circular(20),
+        border: Border.all(color: const Color(0xFFE5E7EB)),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.04),
+            blurRadius: 12,
+            offset: const Offset(0, 4),
+          ),
+        ],
       ),
-      child: LayoutBuilder(
-        builder: (context, constraints) {
-          final isCompact = constraints.maxWidth < 420;
-
-          final avatar = Container(
-            height: 48,
-            width: 48,
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              color: AppColors.accentPrimary.withOpacity(0.1),
-            ),
-            child: const Icon(Icons.mic_none_rounded, color: AppColors.accentPrimary),
-          );
-
-          final details = Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  session.title,
-                  style: AppTypography.body.copyWith(
-                    color: AppColors.ink,
-                    fontWeight: FontWeight.w600,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Container(
+                height: 48,
+                width: 48,
+                decoration: BoxDecoration(
+                  gradient: const LinearGradient(
+                    colors: [Color(0xFFFF385C), Color(0xFFFF5A5F)],
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
                   ),
-                ),
-                const SizedBox(height: AppSpacing.xs),
-                Text(
-                  session.host,
-                  style: AppTypography.caption.copyWith(color: AppColors.inkSoft),
-                ),
-                const SizedBox(height: AppSpacing.xs),
-                Row(
-                  children: [
-                    Icon(Icons.schedule, size: 14, color: AppColors.inkSoft),
-                    const SizedBox(width: AppSpacing.xs),
-                    Text(
-                      session.dateLabel,
-                      style: AppTypography.caption.copyWith(color: AppColors.inkSoft),
-                    ),
-                    const SizedBox(width: AppSpacing.sm),
-                    Icon(Icons.group_outlined, size: 14, color: AppColors.inkSoft),
-                    const SizedBox(width: AppSpacing.xs),
-                    Text(
-                      '${session.participants} inscritos',
-                      style: AppTypography.caption.copyWith(color: AppColors.inkSoft),
+                  shape: BoxShape.circle,
+                  boxShadow: [
+                    BoxShadow(
+                      color: const Color(0xFFE60023).withOpacity(0.4),
+                      blurRadius: 12,
+                      offset: const Offset(0, 4),
                     ),
                   ],
                 ),
-              ],
-            ),
-          );
-
-          final joinButton = ConstrainedBox(
-            constraints: const BoxConstraints(maxWidth: 120),
-            child: FilledButton(
-              onPressed: () {},
-              style: FilledButton.styleFrom(
-                backgroundColor: AppColors.accentPrimary,
-                shape: const StadiumBorder(),
-                padding: const EdgeInsets.symmetric(
-                  horizontal: AppSpacing.md,
-                  vertical: AppSpacing.xs,
+                child: const Icon(
+                  Icons.mic_none_rounded,
+                  color: Colors.white,
+                  size: 22,
                 ),
-                minimumSize: Size.zero,
               ),
-              child: Text(
-                'Unirme',
-                style: AppTypography.button.copyWith(color: AppColors.surface),
+              const SizedBox(width: 14),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      session.title,
+                      style: TextStyle(
+                        fontFamily: 'Plus Jakarta Sans',
+                        fontSize: 16,
+                        fontWeight: FontWeight.w700,
+                        color: AppColors.ink,
+                        height: 1.3,
+                      ),
+                    ),
+                    const SizedBox(height: 6),
+                    Text(
+                      session.host,
+                      style: TextStyle(
+                        fontFamily: 'Plus Jakarta Sans',
+                        fontSize: 13,
+                        color: AppColors.inkSoft,
+                      ),
+                    ),
+                  ],
+                ),
               ),
-            ),
-          );
-
-          final baseRowChildren = <Widget>[
-            avatar,
-            const SizedBox(width: AppSpacing.md),
-            details,
-          ];
-
-          if (!isCompact) {
-            return Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                ...baseRowChildren,
-                const SizedBox(width: AppSpacing.sm),
-                joinButton,
-              ],
-            );
-          }
-
-          return Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: baseRowChildren,
-              ),
-              const SizedBox(height: AppSpacing.md),
-              Align(alignment: Alignment.centerRight, child: joinButton),
             ],
-          );
-        },
+          ),
+          const SizedBox(height: 14),
+          Row(
+            children: [
+              Container(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 10,
+                  vertical: 6,
+                ),
+                decoration: BoxDecoration(
+                  color: const Color(0xFFF3F4F6),
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Icon(Icons.schedule, size: 14, color: AppColors.inkSoft),
+                    const SizedBox(width: 4),
+                    Text(
+                      session.dateLabel,
+                      style: TextStyle(
+                        fontFamily: 'Plus Jakarta Sans',
+                        fontSize: 12,
+                        fontWeight: FontWeight.w600,
+                        color: AppColors.inkSoft,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(width: 8),
+              Container(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 10,
+                  vertical: 6,
+                ),
+                decoration: BoxDecoration(
+                  color: const Color(0xFFF3F4F6),
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Icon(
+                      Icons.group_outlined,
+                      size: 14,
+                      color: AppColors.inkSoft,
+                    ),
+                    const SizedBox(width: 4),
+                    Text(
+                      '${session.participants} inscritos',
+                      style: TextStyle(
+                        fontFamily: 'Plus Jakarta Sans',
+                        fontSize: 12,
+                        fontWeight: FontWeight.w600,
+                        color: AppColors.inkSoft,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              const Spacer(),
+              Container(
+                decoration: BoxDecoration(
+                  gradient: const LinearGradient(
+                    colors: [Color(0xFFFF385C), Color(0xFFFF5A5F)],
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                  ),
+                  borderRadius: BorderRadius.circular(10),
+                  boxShadow: [
+                    BoxShadow(
+                      color: const Color(0xFFE60023).withOpacity(0.4),
+                      blurRadius: 10,
+                      offset: const Offset(0, 4),
+                    ),
+                  ],
+                ),
+                child: Material(
+                  color: Colors.transparent,
+                  child: InkWell(
+                    onTap: () {},
+                    borderRadius: BorderRadius.circular(10),
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 16,
+                        vertical: 8,
+                      ),
+                      child: Text(
+                        'Unirme',
+                        style: TextStyle(
+                          fontFamily: 'Plus Jakarta Sans',
+                          fontSize: 13,
+                          fontWeight: FontWeight.w700,
+                          color: Colors.white,
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ],
       ),
     );
   }

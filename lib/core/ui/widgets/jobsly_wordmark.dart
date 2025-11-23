@@ -41,31 +41,12 @@ class JobslyWordmark extends StatelessWidget {
     );
 
     // Logo con diseño profesional y sombra sutil
-    final logo = Container(
+    // Logo con diseño profesional
+    final logo = Image.asset(
+      'assets/1024.png',
       width: logoSize,
       height: logoSize,
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(12),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.12),
-            offset: const Offset(0, 4),
-            blurRadius: 12,
-            spreadRadius: 0,
-          ),
-        ],
-      ),
-      child: ClipRRect(
-        borderRadius: BorderRadius.circular(12),
-        child: Padding(
-          padding: const EdgeInsets.all(8),
-          child: Image.asset(
-            'assets/logo_rimac_contigo.png',
-            fit: BoxFit.contain,
-          ),
-        ),
-      ),
+      fit: BoxFit.contain,
     );
 
     return Padding(

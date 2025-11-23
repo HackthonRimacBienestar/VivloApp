@@ -53,6 +53,7 @@ class RewardsCarousel extends StatelessWidget {
                   description: reward.description,
                   points: reward.points,
                   icon: reward.icon,
+                  imagePath: reward.imagePath,
                   color: reward.color,
                   index: index,
                 ),
@@ -69,28 +70,28 @@ class RewardsCarousel extends StatelessWidget {
       title: 'Consulta Nutricional',
       description: 'Sesión personalizada',
       points: '30 pts',
-      icon: Icons.restaurant_menu,
+      imagePath: 'assets/nutricionn.png',
       color: AppColors.flareRed,
     ),
     _RewardData(
       title: 'Descuento Gimnasio',
       description: '20% off membresia',
       points: '50 pts',
-      icon: Icons.fitness_center,
+      imagePath: 'assets/ejercicio.png',
       color: const Color(0xFF31B579), // status.success
     ),
     _RewardData(
       title: 'Clase de Yoga',
       description: 'Sesión virtual',
       points: '25 pts',
-      icon: Icons.self_improvement,
+      imagePath: 'assets/yoga.png',
       color: const Color(0xFFD41983), // accent.info (pulse_magenta)
     ),
     _RewardData(
       title: 'Check-up Médico',
       description: 'Evaluación completa',
       points: '80 pts',
-      icon: Icons.medical_services,
+      imagePath: 'assets/atencionmedica.png',
       color: AppColors.emberOrange,
     ),
   ];
@@ -100,14 +101,16 @@ class _RewardData {
   final String title;
   final String description;
   final String points;
-  final IconData icon;
+  final IconData? icon;
+  final String? imagePath;
   final Color color;
 
   _RewardData({
     required this.title,
     required this.description,
     required this.points,
-    required this.icon,
+    this.icon,
+    this.imagePath,
     required this.color,
   });
 }
@@ -116,7 +119,8 @@ class _RewardCard extends StatefulWidget {
   final String title;
   final String description;
   final String points;
-  final IconData icon;
+  final IconData? icon;
+  final String? imagePath;
   final Color color;
   final int index;
 
@@ -124,7 +128,8 @@ class _RewardCard extends StatefulWidget {
     required this.title,
     required this.description,
     required this.points,
-    required this.icon,
+    this.icon,
+    this.imagePath,
     required this.color,
     required this.index,
   });
@@ -208,14 +213,31 @@ class _RewardCardState extends State<_RewardCard>
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    // Icon container
+                    // Icon/Image container
                     Container(
-                      padding: const EdgeInsets.all(10),
+                      height: 60,
                       decoration: BoxDecoration(
-                        color: widget.color.withOpacity(0.08),
+                        color: widget.imagePath != null
+                            ? Colors.transparent
+                            : widget.color.withOpacity(0.08),
                         borderRadius: BorderRadius.circular(14),
                       ),
-                      child: Icon(widget.icon, color: widget.color, size: 22),
+                      child: widget.imagePath != null
+                          ? ClipRRect(
+                              borderRadius: BorderRadius.circular(14),
+                              child: Image.asset(
+                                widget.imagePath!,
+                                fit: BoxFit.cover,
+                                width: double.infinity,
+                              ),
+                            )
+                          : Center(
+                              child: Icon(
+                                widget.icon,
+                                color: widget.color,
+                                size: 22,
+                              ),
+                            ),
                     ),
                     const Spacer(),
                     // Title

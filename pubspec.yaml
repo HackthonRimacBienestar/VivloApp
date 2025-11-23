@@ -77,6 +77,11 @@ flutter:
     - assets/osito1sinfondo.png
     - assets/osito2sinfondo.png
     - assets/chica1.png
+    - assets/1024.png
+    - assets/nutricionn.png
+    - assets/ejercicio.png
+    - assets/yoga.png
+    - assets/atencionmedica.png
     - assets/iconos/
 
   # An image asset can refer to one or more resolution-specific "variants", see

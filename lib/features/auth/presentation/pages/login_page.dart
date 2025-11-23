@@ -105,7 +105,7 @@ class _LoginPageState extends State<LoginPage>
           Positioned.fill(
             child: Column(
               children: [
-                SizedBox(height: baseHeaderHeight - 40), // Overlap with header
+                SizedBox(height: baseHeaderHeight + 20), // Clear the header
                 Expanded(
                   child: SingleChildScrollView(
                     padding: const EdgeInsets.symmetric(horizontal: 24),
@@ -138,7 +138,7 @@ class _LoginPageState extends State<LoginPage>
               builder: (context, child) {
                 final currentHeight =
                     baseHeaderHeight +
-                    (size.height - baseHeaderHeight) *
+                    (size.height + 100 - baseHeaderHeight) *
                         CurvedAnimation(
                           parent: _controller,
                           curve: Curves.easeInOutCubic,
@@ -280,144 +280,127 @@ class _LoginPageState extends State<LoginPage>
   }
 
   Widget _buildLoginCard() {
-    return Container(
-      padding: const EdgeInsets.all(32),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(32),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.08),
-            blurRadius: 30,
-            offset: const Offset(0, 15),
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: [
+        Text(
+          'Bienvenido !!',
+          textAlign: TextAlign.center,
+          style: TextStyle(
+            fontFamily: 'Plus Jakarta Sans',
+            fontSize: 28,
+            fontWeight: FontWeight.w800,
+            letterSpacing: -0.5,
+            color: AppColors.ink,
           ),
-          BoxShadow(
-            color: Colors.black.withOpacity(0.03),
-            blurRadius: 10,
-            offset: const Offset(0, 5),
+        ),
+        const SizedBox(height: 8),
+        Text(
+          'Inicia sesión para continuar',
+          textAlign: TextAlign.center,
+          style: TextStyle(
+            fontFamily: 'Plus Jakarta Sans',
+            fontSize: 16,
+            color: AppColors.inkMuted,
+            height: 1.5,
           ),
-        ],
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            'Bienvenido de nuevo',
-            style: TextStyle(
-              fontFamily: 'Plus Jakarta Sans',
-              fontSize: 28,
-              fontWeight: FontWeight.w800,
-              letterSpacing: -0.5,
-              color: AppColors.ink,
-            ),
-          ),
-          const SizedBox(height: 8),
-          Text(
-            'Inicia sesión para continuar',
-            style: TextStyle(
-              fontFamily: 'Plus Jakarta Sans',
-              fontSize: 16,
-              color: AppColors.inkMuted,
-              height: 1.5,
-            ),
-          ),
-          const SizedBox(height: 40),
+        ),
+        const SizedBox(height: 40),
 
-          // Login Button with Glow
-          Container(
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(16),
-              boxShadow: [
-                BoxShadow(
-                  color: AppColors.flareRed.withOpacity(0.3),
-                  blurRadius: 20,
-                  offset: const Offset(0, 8),
+        // Login Button with Glow
+        Container(
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(16),
+            boxShadow: [
+              BoxShadow(
+                color: AppColors.flareRed.withOpacity(0.3),
+                blurRadius: 20,
+                offset: const Offset(0, 8),
+              ),
+            ],
+          ),
+          child: PrimaryButton(
+            text: 'Iniciar sesión',
+            onPressed: _login,
+            isLoading: _isLoading,
+            fullWidth: true,
+          ),
+        ),
+
+        const SizedBox(height: 32),
+
+        // Divider
+        Row(
+          children: [
+            Expanded(child: Container(height: 1, color: AppColors.line)),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16),
+              child: Text(
+                'O continúa con',
+                style: TextStyle(
+                  fontFamily: 'Plus Jakarta Sans',
+                  fontSize: 14,
+                  fontWeight: FontWeight.w600,
+                  color: AppColors.inkMuted,
                 ),
-              ],
+              ),
             ),
-            child: PrimaryButton(
-              text: 'Iniciar sesión',
-              onPressed: _login,
-              isLoading: _isLoading,
-              fullWidth: true,
+            Expanded(child: Container(height: 1, color: AppColors.line)),
+          ],
+        ),
+        const SizedBox(height: 32),
+
+        // Social Buttons
+        Row(
+          children: [
+            Expanded(
+              child: _SocialButton(
+                assetPath: 'assets/iconos/google.svg',
+                label: 'Google',
+                onPressed: _login,
+              ),
             ),
-          ),
+            const SizedBox(width: 16),
+            Expanded(
+              child: _SocialButton(
+                assetPath: 'assets/iconos/facebook-icon.svg',
+                label: 'Facebook',
+                onPressed: _login,
+              ),
+            ),
+          ],
+        ),
+        const SizedBox(height: 32),
 
-          const SizedBox(height: 32),
-
-          // Divider
-          Row(
+        // Register Link
+        Center(
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
             children: [
-              Expanded(child: Container(height: 1, color: AppColors.line)),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16),
+              Text(
+                '¿No tienes cuenta? ',
+                style: TextStyle(
+                  fontFamily: 'Plus Jakarta Sans',
+                  fontSize: 15,
+                  color: AppColors.inkMuted,
+                ),
+              ),
+              GestureDetector(
+                onTap: _register,
                 child: Text(
-                  'O continúa con',
-                  style: TextStyle(
-                    fontFamily: 'Plus Jakarta Sans',
-                    fontSize: 14,
-                    fontWeight: FontWeight.w600,
-                    color: AppColors.inkMuted,
-                  ),
-                ),
-              ),
-              Expanded(child: Container(height: 1, color: AppColors.line)),
-            ],
-          ),
-          const SizedBox(height: 32),
-
-          // Social Buttons
-          Row(
-            children: [
-              Expanded(
-                child: _SocialButton(
-                  assetPath: 'assets/iconos/google.svg',
-                  label: 'Google',
-                  onPressed: _login,
-                ),
-              ),
-              const SizedBox(width: 16),
-              Expanded(
-                child: _SocialButton(
-                  assetPath: 'assets/iconos/facebook-icon.svg',
-                  label: 'Facebook',
-                  onPressed: _login,
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 32),
-
-          // Register Link
-          Center(
-            child: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Text(
-                  '¿No tienes cuenta? ',
+                  'Regístrate',
                   style: TextStyle(
                     fontFamily: 'Plus Jakarta Sans',
                     fontSize: 15,
-                    color: AppColors.inkMuted,
+                    fontWeight: FontWeight.w700,
+                    color: AppColors.flareRed,
                   ),
                 ),
-                GestureDetector(
-                  onTap: _register,
-                  child: Text(
-                    'Regístrate',
-                    style: TextStyle(
-                      fontFamily: 'Plus Jakarta Sans',
-                      fontSize: 15,
-                      fontWeight: FontWeight.w700,
-                      color: AppColors.flareRed,
-                    ),
-                  ),
-                ),
-              ],
-            ),
+              ),
+            ],
           ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 }
