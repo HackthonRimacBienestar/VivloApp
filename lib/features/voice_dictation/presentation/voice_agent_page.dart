@@ -2,10 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:permission_handler/permission_handler.dart';
 import '../../../core/ui/theme/colors.dart';
 import '../../../core/ui/theme/typography.dart';
+import '../../../core/ui/theme/gradients.dart';
 import '../logic/voice_agent_controller.dart';
 
 class VoiceAgentPage extends StatefulWidget {
-  const VoiceAgentPage({super.key});
+  final VoidCallback? onBackPressed;
+
+  const VoiceAgentPage({super.key, this.onBackPressed});
 
   @override
   State<VoiceAgentPage> createState() => _VoiceAgentPageState();
@@ -35,30 +38,32 @@ class _VoiceAgentPageState extends State<VoiceAgentPage>
     // Animación del micrófono
     _micAnimationController = AnimationController(
       vsync: this,
-      duration: const Duration(milliseconds: 220),
-    );
-    _micScaleAnimation = Tween<double>(begin: 1.0, end: 0.92).animate(
+      duration: const Duration(milliseconds: 1500),
+    )..repeat(reverse: true);
+
+    _micScaleAnimation = Tween<double>(begin: 1.0, end: 1.1).animate(
       CurvedAnimation(parent: _micAnimationController, curve: Curves.easeInOut),
     );
-    _micGlowAnimation = Tween<double>(begin: 0.4, end: 0.7).animate(
+    _micGlowAnimation = Tween<double>(begin: 0.2, end: 0.6).animate(
       CurvedAnimation(parent: _micAnimationController, curve: Curves.easeInOut),
     );
 
     // Animación de la mascota (bounce sutil y pulse)
     _mascotAnimationController = AnimationController(
       vsync: this,
-      duration: const Duration(milliseconds: 2000),
+      duration: const Duration(milliseconds: 3000),
     )..repeat(reverse: true);
-    _mascotBounceAnimation = Tween<double>(begin: 0.0, end: 4.0).animate(
+
+    _mascotBounceAnimation = Tween<double>(begin: 0.0, end: 8.0).animate(
       CurvedAnimation(
         parent: _mascotAnimationController,
-        curve: Curves.easeInOut,
+        curve: Curves.easeInOutSine,
       ),
     );
-    _mascotPulseAnimation = Tween<double>(begin: 1.0, end: 1.05).animate(
+    _mascotPulseAnimation = Tween<double>(begin: 1.0, end: 1.03).animate(
       CurvedAnimation(
         parent: _mascotAnimationController,
-        curve: Curves.easeInOut,
+        curve: Curves.easeInOutSine,
       ),
     );
 
@@ -72,7 +77,7 @@ class _VoiceAgentPageState extends State<VoiceAgentPage>
     await Permission.microphone.request();
     _controller.connect();
   }
-  
+
   String _getMascotAsset() {
     if (_controller.isAgentSpeaking) {
       return 'assets/osito2sinfondo.png';
@@ -85,20 +90,14 @@ class _VoiceAgentPageState extends State<VoiceAgentPage>
 
     // Reaccionar a cambios de estado del micrófono
     if (_controller.isListening) {
-      // Animación más rápida cuando está escuchando
-      _mascotAnimationController.duration = const Duration(milliseconds: 800);
-      // Activar animación del micrófono
-      if (_micAnimationController.status != AnimationStatus.forward &&
-          _micAnimationController.status != AnimationStatus.completed) {
-        _micAnimationController.forward();
+      _micAnimationController.duration = const Duration(milliseconds: 800);
+      if (!_micAnimationController.isAnimating) {
+        _micAnimationController.repeat(reverse: true);
       }
     } else {
-      // Animación normal cuando está idle
-      _mascotAnimationController.duration = const Duration(milliseconds: 2000);
-      // Desactivar animación del micrófono
-      if (_micAnimationController.status != AnimationStatus.reverse &&
-          _micAnimationController.status != AnimationStatus.dismissed) {
-        _micAnimationController.reverse();
+      _micAnimationController.duration = const Duration(milliseconds: 2000);
+      if (!_micAnimationController.isAnimating) {
+        _micAnimationController.repeat(reverse: true);
       }
     }
 
@@ -106,8 +105,8 @@ class _VoiceAgentPageState extends State<VoiceAgentPage>
     if (_scrollController.hasClients) {
       _scrollController.animateTo(
         _scrollController.position.maxScrollExtent,
-        duration: const Duration(milliseconds: 220),
-        curve: Curves.easeOut,
+        duration: const Duration(milliseconds: 300),
+        curve: Curves.easeOutCubic,
       );
     }
   }
@@ -129,20 +128,21 @@ class _VoiceAgentPageState extends State<VoiceAgentPage>
         _controller.agentResponse.isNotEmpty;
 
     return Scaffold(
-      backgroundColor: AppColors.surfaceMuted,
+      extendBodyBehindAppBar: true,
+      backgroundColor: Colors.transparent,
       appBar: _buildAppBar(),
-      body: SafeArea(
-        child: Column(
-          children: [
-            // Inline Banner para disclaimer médico (solo si no hay mensajes)
-            if (!hasMessages) _buildDisclaimerBanner(),
+      body: Container(
+        decoration: const BoxDecoration(gradient: AppGradients.softAmbient),
+        child: SafeArea(
+          child: Column(
+            children: [
+              // Chat Area or Hero Area
+              Expanded(child: _buildChatArea(hasMessages)),
 
-            // Chat Area
-            Expanded(child: _buildChatArea(hasMessages)),
-
-            // Bottom Controls Panel
-            _buildBottomControls(),
-          ],
+              // Bottom Controls Panel
+              _buildBottomControls(),
+            ],
+          ),
         ),
       ),
     );
@@ -150,28 +150,50 @@ class _VoiceAgentPageState extends State<VoiceAgentPage>
 
   PreferredSizeWidget _buildAppBar() {
     return AppBar(
-      backgroundColor: AppColors.surface,
+      backgroundColor: Colors.transparent,
       elevation: 0,
       leading: IconButton(
-        icon: const Icon(Icons.arrow_back, color: AppColors.ink),
-        onPressed: () => Navigator.of(context).pop(),
+        icon: Container(
+          padding: const EdgeInsets.all(8),
+          decoration: BoxDecoration(
+            color: Colors.white.withOpacity(0.5),
+            shape: BoxShape.circle,
+          ),
+          child: const Icon(Icons.arrow_back, color: AppColors.ink, size: 20),
+        ),
+        onPressed: () {
+          if (widget.onBackPressed != null) {
+            widget.onBackPressed!();
+          } else {
+            Navigator.of(context).pop();
+          }
+        },
         tooltip: 'Volver',
       ),
+      centerTitle: true,
       title: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
             'Soporte por voz',
-            style: AppTypography.subtitle.copyWith(color: AppColors.ink),
+            style: AppTypography.subtitle.copyWith(
+              color: AppColors.ink,
+              fontWeight: FontWeight.w700,
+            ),
           ),
-          const SizedBox(height: 2),
+          const SizedBox(height: 4),
           _buildConnectionStatus(),
         ],
       ),
-      titleSpacing: 0,
       actions: [
         IconButton(
-          icon: const Icon(Icons.refresh, color: AppColors.ink),
+          icon: Container(
+            padding: const EdgeInsets.all(8),
+            decoration: BoxDecoration(
+              color: Colors.white.withOpacity(0.5),
+              shape: BoxShape.circle,
+            ),
+            child: const Icon(Icons.refresh, color: AppColors.ink, size: 20),
+          ),
           onPressed: () {
             _controller.disconnect();
             _controller.connect();
@@ -185,122 +207,139 @@ class _VoiceAgentPageState extends State<VoiceAgentPage>
 
   Widget _buildConnectionStatus() {
     Color statusColor;
-    IconData statusIcon;
     String statusText;
 
     if (_controller.isConnected) {
       statusColor = AppColors.statusSuccess;
-      statusIcon = Icons.circle;
       statusText = 'Conectado';
     } else if (_controller.status.contains('Error')) {
       statusColor = AppColors.statusError;
-      statusIcon = Icons.error_outline;
       statusText = 'Error de conexión';
     } else if (_controller.status.contains('Conectando')) {
       statusColor = AppColors.statusWarning;
-      statusIcon = Icons.sync;
       statusText = 'Conectando...';
     } else {
       statusColor = AppColors.statusOffline;
-      statusIcon = Icons.circle_outlined;
       statusText = 'Desconectado';
     }
 
-    return Row(
-      children: [
-        Icon(statusIcon, size: 8, color: statusColor),
-        const SizedBox(width: 6),
-        Text(
-          statusText,
-          style: AppTypography.caption.copyWith(
-            color: statusColor,
-            fontWeight: FontWeight.w500,
-          ),
-        ),
-      ],
-    );
-  }
-
-  Widget _buildDisclaimerBanner() {
     return Container(
-      margin: const EdgeInsets.fromLTRB(16, 8, 16, 0),
-      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
       decoration: BoxDecoration(
-        color: AppColors.surfaceHint,
-        borderRadius: BorderRadius.circular(8),
+        color: statusColor.withOpacity(0.1),
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: statusColor.withOpacity(0.2)),
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
-        children: [const SizedBox(width: 6)],
+        children: [
+          Container(
+            width: 6,
+            height: 6,
+            decoration: BoxDecoration(
+              color: statusColor,
+              shape: BoxShape.circle,
+            ),
+          ),
+          const SizedBox(width: 6),
+          Text(
+            statusText,
+            style: AppTypography.caption.copyWith(
+              color: statusColor,
+              fontWeight: FontWeight.w600,
+              fontSize: 10,
+            ),
+          ),
+        ],
       ),
     );
   }
 
   Widget _buildChatArea(bool hasMessages) {
     if (!hasMessages) {
-      return Container(
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-            colors: [
-              AppColors.accentPrimary.withOpacity(0.20),
-              AppColors.emberOrange.withOpacity(0.15),
-              AppColors.surfaceMuted,
-            ],
-            stops: const [0.0, 0.4, 1.0],
-          ),
-        ),
-        child: Center(
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 32),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                // Mascota del asistente con animación sutil
-                AnimatedBuilder(
-                  animation: _mascotAnimationController,
-                  builder: (context, child) {
-                    final mascotAsset = _getMascotAsset();
-                    return Transform.translate(
+      return Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            // Mascota del asistente con animación sutil y glow
+            AnimatedBuilder(
+              animation: _mascotAnimationController,
+              builder: (context, child) {
+                final mascotAsset = _getMascotAsset();
+                return Stack(
+                  alignment: Alignment.center,
+                  children: [
+                    // Glow effect background
+                    Transform.scale(
+                      scale: _mascotPulseAnimation.value * 1.2,
+                      child: Container(
+                        width: 220,
+                        height: 220,
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          gradient: RadialGradient(
+                            colors: [
+                              AppColors.accentPrimary.withOpacity(0.2),
+                              AppColors.accentPrimary.withOpacity(0.0),
+                            ],
+                            stops: const [0.0, 0.7],
+                          ),
+                        ),
+                      ),
+                    ),
+                    // Mascot Image
+                    Transform.translate(
                       offset: Offset(0, -_mascotBounceAnimation.value),
                       child: Transform.scale(
                         scale: _mascotPulseAnimation.value,
                         child: AnimatedSwitcher(
-                          duration: const Duration(milliseconds: 220),
-                          switchInCurve: Curves.easeOut,
-                          switchOutCurve: Curves.easeIn,
+                          duration: const Duration(milliseconds: 300),
+                          switchInCurve: Curves.easeOutBack,
+                          switchOutCurve: Curves.easeInBack,
                           child: Image.asset(
                             mascotAsset,
                             key: ValueKey(mascotAsset),
-                            height: 200,
-                            width: 200,
+                            height: 240,
+                            width: 240,
                             fit: BoxFit.contain,
                           ),
                         ),
                       ),
-                    );
-                  },
-                ),
-                const SizedBox(height: 24),
-                Text(
-                  'Toca el micrófono para comenzar',
-                  style: AppTypography.bodySmall.copyWith(
-                    color: AppColors.inkSoft,
-                  ),
-                  textAlign: TextAlign.center,
-                ),
-              ],
+                    ),
+                  ],
+                );
+              },
             ),
-          ),
+            const SizedBox(height: 40),
+            Text(
+              '¿En qué puedo ayudarte hoy?',
+              style: AppTypography.title.copyWith(
+                color: AppColors.ink,
+                fontWeight: FontWeight.bold,
+                fontSize: 22,
+              ),
+              textAlign: TextAlign.center,
+            ),
+            const SizedBox(height: 8),
+            Text(
+              'Toca el micrófono para comenzar a hablar',
+              style: AppTypography.bodySmall.copyWith(
+                color: AppColors.inkSoft,
+                fontSize: 14,
+              ),
+              textAlign: TextAlign.center,
+            ),
+          ],
         ),
       );
     }
 
     return ListView(
       controller: _scrollController,
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 20),
+      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
       children: [
+        // Spacer to push content down if few messages
+        const SizedBox(height: 20),
         // Mensaje del usuario (si existe)
         if (_controller.userTranscript.isNotEmpty)
           _ChatBubble(
@@ -321,23 +360,32 @@ class _VoiceAgentPageState extends State<VoiceAgentPage>
 
   Widget _buildBottomControls() {
     return Container(
-      padding: const EdgeInsets.fromLTRB(24, 32, 24, 40),
+      padding: const EdgeInsets.fromLTRB(24, 20, 24, 40),
+      decoration: BoxDecoration(
+        color: Colors.white.withOpacity(0.6),
+        borderRadius: const BorderRadius.vertical(top: Radius.circular(32)),
+        border: Border(top: BorderSide(color: Colors.white.withOpacity(0.5))),
+      ),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          // Microtexto de ayuda
-          Text(
-            _getHelpText(),
-            style: AppTypography.bodySmall.copyWith(color: AppColors.inkSoft),
-            textAlign: TextAlign.center,
+          // Microtexto de ayuda con animación
+          AnimatedSwitcher(
+            duration: const Duration(milliseconds: 300),
+            child: Text(
+              _getHelpText(),
+              key: ValueKey(_getHelpText()),
+              style: AppTypography.bodySmall.copyWith(
+                color: AppColors.inkSoft,
+                fontWeight: FontWeight.w600,
+              ),
+              textAlign: TextAlign.center,
+            ),
           ),
-          const SizedBox(height: 24),
+          const SizedBox(height: 32),
 
           // Botón de micrófono grande y centrado
           _buildMicrophoneButton(),
-
-          // Disclaimer discreto en la parte inferior
-          const SizedBox(height: 16),
         ],
       ),
     );
@@ -348,7 +396,7 @@ class _VoiceAgentPageState extends State<VoiceAgentPage>
       return 'Conectando con soporte...';
     }
     if (_controller.isListening) {
-      return 'Escuchando... Toca para detener';
+      return 'Escuchando...';
     }
     if (_controller.status.contains('Procesando')) {
       return 'Procesando tu mensaje...';
@@ -370,45 +418,65 @@ class _VoiceAgentPageState extends State<VoiceAgentPage>
         builder: (context, child) {
           final buttonColor = isDisabled
               ? AppColors.inkSoft
-              : (isActive ? AppColors.statusError : AppColors.accentPrimary);
+              : (isActive ? AppColors.accentPrimary : AppColors.accentPrimary);
 
-          final glowOpacity = isActive ? _micGlowAnimation.value : 0.4;
-          final scale = isActive ? _micScaleAnimation.value : 1.0;
-          final shadowBlur = isActive ? 32.0 : 20.0;
-          final shadowSpread = isActive ? 8.0 : 4.0;
-          final shadowOffset = isActive ? 4.0 : 2.0;
-
-          return Transform.scale(
-            scale: scale,
-            child: Container(
-              height: 96,
-              width: 96,
-              decoration: BoxDecoration(
-                color: buttonColor,
-                shape: BoxShape.circle,
-                boxShadow: [
-                  // Sombra principal (elevation level_2 → level_3 cuando está activo)
-                  BoxShadow(
-                    color: buttonColor.withOpacity(glowOpacity),
-                    blurRadius: shadowBlur,
-                    spreadRadius: shadowSpread,
-                    offset: Offset(0, shadowOffset),
+          return Stack(
+            alignment: Alignment.center,
+            children: [
+              // Outer Ripple 1
+              if (isActive)
+                Container(
+                  width: 140 * _micScaleAnimation.value,
+                  height: 140 * _micScaleAnimation.value,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: buttonColor.withOpacity(0.1),
                   ),
-                  // Glow adicional cuando está activo
-                  if (isActive)
+                ),
+              // Outer Ripple 2
+              if (isActive)
+                Container(
+                  width: 120 * _micScaleAnimation.value,
+                  height: 120 * _micScaleAnimation.value,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: buttonColor.withOpacity(0.2),
+                  ),
+                ),
+              // Main Button
+              Container(
+                height: 88,
+                width: 88,
+                decoration: BoxDecoration(
+                  gradient: isActive
+                      ? AppGradients.flameHero
+                      : const LinearGradient(
+                          colors: [Color(0xFF4A4A4A), Color(0xFF2D2D2D)],
+                          begin: Alignment.topLeft,
+                          end: Alignment.bottomRight,
+                        ),
+                  shape: BoxShape.circle,
+                  boxShadow: [
                     BoxShadow(
-                      color: buttonColor.withOpacity(0.3),
-                      blurRadius: 40,
-                      spreadRadius: 12,
+                      color: (isActive ? AppColors.flareRed : Colors.black)
+                          .withOpacity(0.3),
+                      blurRadius: 20,
+                      offset: const Offset(0, 10),
                     ),
-                ],
+                    BoxShadow(
+                      color: Colors.white.withOpacity(0.2),
+                      blurRadius: 4,
+                      offset: const Offset(0, -2),
+                    ),
+                  ],
+                ),
+                child: Icon(
+                  isActive ? Icons.graphic_eq : Icons.mic_rounded,
+                  color: Colors.white,
+                  size: 36,
+                ),
               ),
-              child: Icon(
-                isActive ? Icons.stop : Icons.mic,
-                color: AppColors.surface,
-                size: 40,
-              ),
-            ),
+            ],
           );
         },
       ),
@@ -427,13 +495,13 @@ class _ChatBubble extends StatelessWidget {
   Widget build(BuildContext context) {
     return TweenAnimationBuilder<double>(
       tween: Tween<double>(begin: 0.0, end: 1.0),
-      duration: const Duration(milliseconds: 220),
-      curve: Curves.easeOut,
+      duration: const Duration(milliseconds: 300),
+      curve: Curves.easeOutBack,
       builder: (context, value, child) {
         return Opacity(
           opacity: value,
           child: Transform.translate(
-            offset: Offset(0, 8 * (1 - value)),
+            offset: Offset(0, 20 * (1 - value)),
             child: child,
           ),
         );
@@ -442,23 +510,25 @@ class _ChatBubble extends StatelessWidget {
         alignment: isUser ? Alignment.centerRight : Alignment.centerLeft,
         child: Container(
           constraints: BoxConstraints(
-            maxWidth: MediaQuery.of(context).size.width * 0.75,
+            maxWidth: MediaQuery.of(context).size.width * 0.8,
           ),
-          margin: const EdgeInsets.only(bottom: 12),
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+          margin: const EdgeInsets.only(bottom: 16),
+          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
           decoration: BoxDecoration(
-            color: isUser ? AppColors.accentPrimary : AppColors.surface,
+            color: isUser ? AppColors.accentPrimary : Colors.white,
             borderRadius: BorderRadius.only(
-              topLeft: const Radius.circular(16),
-              topRight: const Radius.circular(16),
-              bottomLeft: Radius.circular(isUser ? 16 : 4),
-              bottomRight: Radius.circular(isUser ? 4 : 16),
+              topLeft: const Radius.circular(24),
+              topRight: const Radius.circular(24),
+              bottomLeft: Radius.circular(isUser ? 24 : 4),
+              bottomRight: Radius.circular(isUser ? 4 : 24),
             ),
             boxShadow: [
               BoxShadow(
-                color: Colors.black.withOpacity(0.06),
+                color: isUser
+                    ? AppColors.accentPrimary.withOpacity(0.3)
+                    : Colors.black.withOpacity(0.05),
                 blurRadius: 12,
-                offset: const Offset(0, 2),
+                offset: const Offset(0, 6),
               ),
             ],
           ),
@@ -469,19 +539,20 @@ class _ChatBubble extends StatelessWidget {
               Text(
                 text,
                 style: AppTypography.body.copyWith(
-                  color: isUser ? AppColors.surface : AppColors.ink,
-                  height: 1.4,
+                  color: isUser ? Colors.white : AppColors.ink,
+                  height: 1.5,
+                  fontSize: 15,
                 ),
               ),
               if (timestamp != null) ...[
-                const SizedBox(height: 4),
+                const SizedBox(height: 6),
                 Text(
                   _formatTimestamp(timestamp!),
                   style: AppTypography.caption.copyWith(
                     color: isUser
-                        ? AppColors.surface.withOpacity(0.7)
+                        ? Colors.white.withOpacity(0.7)
                         : AppColors.inkSoft,
-                    fontSize: 10,
+                    fontSize: 11,
                   ),
                 ),
               ],
