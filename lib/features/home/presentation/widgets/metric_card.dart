@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../../../core/ui/theme/typography.dart';
+import '../../../../core/ui/theme/colors.dart';
 
 enum ChartType { line, bar }
 
@@ -74,13 +75,18 @@ class _MetricCardState extends State<MetricCard>
             child: Container(
               padding: const EdgeInsets.all(16),
               decoration: BoxDecoration(
-                color: widget.color,
+                color: Colors.white,
                 borderRadius: BorderRadius.circular(24),
                 boxShadow: [
                   BoxShadow(
-                    color: widget.color.withOpacity(0.4),
-                    blurRadius: 12,
-                    offset: const Offset(0, 6),
+                    color: widget.color.withOpacity(0.15),
+                    blurRadius: 20,
+                    offset: const Offset(0, 8),
+                  ),
+                  BoxShadow(
+                    color: Colors.black.withOpacity(0.02),
+                    blurRadius: 4,
+                    offset: const Offset(0, 2),
                   ),
                 ],
               ),
@@ -90,19 +96,32 @@ class _MetricCardState extends State<MetricCard>
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Expanded(
-                        child: Text(
-                          widget.title.toUpperCase(),
-                          style: AppTypography.caption.copyWith(
-                            color: Colors.white.withOpacity(0.9),
-                            fontWeight: FontWeight.bold,
-                            letterSpacing: 0.5,
-                          ),
-                          maxLines: 2,
+                      Container(
+                        padding: const EdgeInsets.all(8),
+                        decoration: BoxDecoration(
+                          color: widget.color.withOpacity(0.1),
+                          shape: BoxShape.circle,
                         ),
+                        child: Icon(widget.icon, color: widget.color, size: 18),
                       ),
-                      Icon(widget.icon, color: Colors.white, size: 20),
+                      Icon(
+                        Icons.more_horiz,
+                        color: AppColors.inkMuted.withOpacity(0.3),
+                        size: 20,
+                      ),
                     ],
+                  ),
+                  const SizedBox(height: 12),
+                  Text(
+                    widget.title,
+                    style: AppTypography.caption.copyWith(
+                      color: AppColors.inkMuted,
+                      fontWeight: FontWeight.w700,
+                      fontSize: 11,
+                      letterSpacing: 0.5,
+                    ),
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
                   ),
                   const Spacer(),
                   SizedBox(
@@ -110,7 +129,7 @@ class _MetricCardState extends State<MetricCard>
                     width: double.infinity,
                     child: CustomPaint(
                       painter: _ChartPainter(
-                        color: Colors.white.withOpacity(0.5),
+                        color: widget.color,
                         type: widget.chartType,
                       ),
                     ),
@@ -135,7 +154,7 @@ class _ChartPainter extends CustomPainter {
   void paint(Canvas canvas, Size size) {
     final paint = Paint()
       ..color = color
-      ..strokeWidth = 3
+      ..strokeWidth = 2.5
       ..style = type == ChartType.line
           ? PaintingStyle.stroke
           : PaintingStyle.fill

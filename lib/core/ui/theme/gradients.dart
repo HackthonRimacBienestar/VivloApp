@@ -15,10 +15,7 @@ class AppGradients {
   static const LinearGradient flameHero = LinearGradient(
     begin: Alignment.topLeft,
     end: Alignment.bottomRight,
-    colors: [
-      AppColors.flareRed,
-      AppColors.emberOrange,
-    ],
+    colors: [AppColors.flareRed, AppColors.emberOrange],
   );
 
   /// Gradiente energético: Magenta → Rojo → Naranja
@@ -26,10 +23,18 @@ class AppGradients {
   static const LinearGradient energyFlow = LinearGradient(
     begin: Alignment.topCenter,
     end: Alignment.bottomCenter,
+    colors: [AppColors.pulseMagenta, AppColors.flareRed, AppColors.emberOrange],
+    stops: [0.0, 0.5, 1.0],
+  );
+
+  /// Gradiente Premium para Health Score Card
+  static const LinearGradient healthScoreHero = LinearGradient(
+    begin: Alignment.topLeft,
+    end: Alignment.bottomRight,
     colors: [
-      AppColors.pulseMagenta,
-      AppColors.flareRed,
-      AppColors.emberOrange,
+      Color(0xFFD32F2F), // Deep Red
+      Color(0xFFE53935), // Red
+      Color(0xFFFF5252), // Accent Red
     ],
     stops: [0.0, 0.5, 1.0],
   );
@@ -86,11 +91,7 @@ class AppGradients {
 
   /// Gradiente para indicadores de progreso
   static const LinearGradient progressIndicator = LinearGradient(
-    colors: [
-      AppColors.pulseMagenta,
-      AppColors.flareRed,
-      AppColors.emberOrange,
-    ],
+    colors: [AppColors.pulseMagenta, AppColors.flareRed, AppColors.emberOrange],
   );
 
   // ══════════════════════════════════════════════════════════════════════════
@@ -101,11 +102,7 @@ class AppGradients {
   static const LinearGradient shimmer = LinearGradient(
     begin: Alignment(-1.0, -0.5),
     end: Alignment(1.0, 0.5),
-    colors: [
-      Color(0xFFF5F5F2),
-      Color(0xFFFFFFFF),
-      Color(0xFFF5F5F2),
-    ],
+    colors: [Color(0xFFF5F5F2), Color(0xFFFFFFFF), Color(0xFFF5F5F2)],
     stops: [0.0, 0.5, 1.0],
   );
 
@@ -117,10 +114,7 @@ class AppGradients {
   static const LinearGradient scrim = LinearGradient(
     begin: Alignment.topCenter,
     end: Alignment.bottomCenter,
-    colors: [
-      Color(0x80000000),
-      Color(0xCC000000),
-    ],
+    colors: [Color(0x80000000), Color(0xCC000000)],
   );
 
   /// Glass effect: semi-transparente con blur
@@ -138,10 +132,7 @@ class AppGradients {
         ],
       ),
       borderRadius: borderRadius ?? BorderRadius.circular(16),
-      border: Border.all(
-        color: Colors.white.withOpacity(0.2),
-        width: 1,
-      ),
+      border: Border.all(color: Colors.white.withOpacity(0.2), width: 1),
     );
   }
 
@@ -188,9 +179,7 @@ class AppBackgrounds {
   AppBackgrounds._();
 
   /// Fondo blanco puro (fallback)
-  static const BoxDecoration solid = BoxDecoration(
-    color: AppColors.surface,
-  );
+  static const BoxDecoration solid = BoxDecoration(color: AppColors.surface);
 
   /// Fondo con gradiente suave ambiente
   static const BoxDecoration softGradient = BoxDecoration(

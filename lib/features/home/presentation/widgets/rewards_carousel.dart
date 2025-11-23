@@ -38,7 +38,7 @@ class RewardsCarousel extends StatelessWidget {
         ),
         const SizedBox(height: AppSpacing.sm),
         SizedBox(
-          height: 180,
+          height: 210,
           child: ListView.builder(
             scrollDirection: Axis.horizontal,
             itemCount: _rewards.length,
@@ -192,40 +192,40 @@ class _RewardCardState extends State<_RewardCard>
             child: Opacity(
               opacity: _fadeAnimation.value,
               child: Container(
-                width: 140,
-                padding: const EdgeInsets.all(AppSpacing.md),
+                width: 150,
+                padding: const EdgeInsets.all(16),
                 decoration: BoxDecoration(
-                  color: AppColors.surface,
-                  borderRadius: BorderRadius.circular(20), // card radius
-                  border: Border.all(color: AppColors.line, width: 1),
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(24),
                   boxShadow: [
                     BoxShadow(
-                      color: Colors.black.withOpacity(0.06),
-                      blurRadius: 12,
-                      offset: const Offset(0, 2),
+                      color: Colors.black.withOpacity(0.04),
+                      blurRadius: 16,
+                      offset: const Offset(0, 8),
                     ),
                   ],
                 ),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    // Icon container with color
+                    // Icon container
                     Container(
                       padding: const EdgeInsets.all(10),
                       decoration: BoxDecoration(
-                        color: widget.color.withOpacity(0.1),
-                        borderRadius: BorderRadius.circular(12),
+                        color: widget.color.withOpacity(0.08),
+                        borderRadius: BorderRadius.circular(14),
                       ),
-                      child: Icon(widget.icon, color: widget.color, size: 24),
+                      child: Icon(widget.icon, color: widget.color, size: 22),
                     ),
                     const Spacer(),
                     // Title
                     Text(
                       widget.title,
                       style: AppTypography.bodySmall.copyWith(
-                        fontWeight: FontWeight.bold,
+                        fontWeight: FontWeight.w700,
                         color: AppColors.ink,
                         height: 1.2,
+                        fontSize: 13,
                       ),
                       maxLines: 2,
                       overflow: TextOverflow.ellipsis,
@@ -236,31 +236,37 @@ class _RewardCardState extends State<_RewardCard>
                       widget.description,
                       style: AppTypography.caption.copyWith(
                         color: AppColors.inkMuted,
+                        fontSize: 11,
                       ),
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                     ),
-                    const SizedBox(height: 4),
+                    const SizedBox(height: 10),
                     // Points chip
                     Container(
                       padding: const EdgeInsets.symmetric(
-                        horizontal: 8,
+                        horizontal: 10,
                         vertical: 4,
                       ),
                       decoration: BoxDecoration(
-                        color: widget.color.withOpacity(0.1),
-                        borderRadius: BorderRadius.circular(12),
+                        color: AppColors.surfaceMuted,
+                        borderRadius: BorderRadius.circular(20),
                       ),
                       child: Row(
                         mainAxisSize: MainAxisSize.min,
                         children: [
-                          Icon(Icons.star, color: widget.color, size: 12),
+                          Icon(
+                            Icons.stars_rounded,
+                            color: widget.color,
+                            size: 14,
+                          ),
                           const SizedBox(width: 4),
                           Text(
                             widget.points,
-                            style: AppTypography.caption.copyWith(
-                              color: widget.color,
-                              fontWeight: FontWeight.bold,
+                            style: TextStyle(
+                              color: AppColors.ink,
+                              fontWeight: FontWeight.w700,
+                              fontSize: 11,
                             ),
                           ),
                         ],
