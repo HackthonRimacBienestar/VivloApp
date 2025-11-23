@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
+import 'package:confetti/confetti.dart';
 import '../../../../core/ui/theme/colors.dart';
 import '../../../../core/ui/theme/typography.dart';
 
@@ -14,13 +16,23 @@ class MissionsPage extends StatefulWidget {
 
 class _MissionsPageState extends State<MissionsPage> {
   final MissionsRepository _repository = MissionsRepository();
+  late ConfettiController _confettiController;
   List<HealthChallenge> _challenges = [];
   bool _isLoading = true;
 
   @override
   void initState() {
     super.initState();
+    _confettiController = ConfettiController(
+      duration: const Duration(seconds: 3),
+    );
     _loadChallenges();
+  }
+
+  @override
+  void dispose() {
+    _confettiController.dispose();
+    super.dispose();
   }
 
   Future<void> _loadChallenges() async {
@@ -39,6 +51,7 @@ class _MissionsPageState extends State<MissionsPage> {
       await _repository.completeChallenge(challenge.id);
       await _loadChallenges(); // Reload to update status
       if (mounted) {
+        _confettiController.play();
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('¡Misión completada! +50 puntos')),
         );
@@ -50,6 +63,26 @@ class _MissionsPageState extends State<MissionsPage> {
         ).showSnackBar(SnackBar(content: Text('Error al completar: $e')));
       }
     }
+  }
+
+  String _getCategoryName(ChallengeCategory category) {
+    switch (category) {
+      case ChallengeCategory.glucose_check:
+        return 'Control de Glucosa';
+      case ChallengeCategory.diet:
+        return 'Alimentación';
+      case ChallengeCategory.exercise:
+        return 'Ejercicio';
+      case ChallengeCategory.medication:
+        return 'Medicación';
+      case ChallengeCategory.mental_wellbeing:
+        return 'Bienestar Mental';
+    }
+  }
+
+  String _formatDate(DateTime? date) {
+    if (date == null) return 'Sin fecha límite';
+    return DateFormat('dd/MM/yyyy').format(date);
   }
 
   @override
@@ -72,20 +105,39 @@ class _MissionsPageState extends State<MissionsPage> {
           onPressed: () => Navigator.of(context).pop(),
         ),
       ),
-      body: _isLoading
-          ? const Center(child: CircularProgressIndicator())
-          : _challenges.isEmpty
-          ? _buildEmptyState()
-          : RefreshIndicator(
-              onRefresh: _loadChallenges,
-              child: ListView.builder(
-                padding: const EdgeInsets.all(16),
-                itemCount: _challenges.length,
-                itemBuilder: (context, index) {
-                  return _buildChallengeCard(_challenges[index]);
-                },
-              ),
+      body: Stack(
+        children: [
+          _isLoading
+              ? const Center(child: CircularProgressIndicator())
+              : _challenges.isEmpty
+              ? _buildEmptyState()
+              : RefreshIndicator(
+                  onRefresh: _loadChallenges,
+                  child: ListView.builder(
+                    padding: const EdgeInsets.all(16),
+                    itemCount: _challenges.length,
+                    itemBuilder: (context, index) {
+                      return _buildChallengeCard(_challenges[index]);
+                    },
+                  ),
+                ),
+          Align(
+            alignment: Alignment.topCenter,
+            child: ConfettiWidget(
+              confettiController: _confettiController,
+              blastDirectionality: BlastDirectionality.explosive,
+              shouldLoop: false,
+              colors: const [
+                Colors.green,
+                Colors.blue,
+                Colors.pink,
+                Colors.orange,
+                Colors.purple,
+              ],
             ),
+          ),
+        ],
+      ),
     );
   }
 
@@ -112,6 +164,8 @@ class _MissionsPageState extends State<MissionsPage> {
 
   Widget _buildChallengeCard(HealthChallenge challenge) {
     final isCompleted = challenge.status == ChallengeStatus.completed;
+    final categoryName = _getCategoryName(challenge.category);
+    final dueDateStr = _formatDate(challenge.dueDate);
 
     return Container(
       margin: const EdgeInsets.only(bottom: 16),
@@ -147,6 +201,38 @@ class _MissionsPageState extends State<MissionsPage> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
+                      Row(
+                        children: [
+                          Container(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 8,
+                              vertical: 2,
+                            ),
+                            decoration: BoxDecoration(
+                              color: AppColors.surfaceHint.withOpacity(0.5),
+                              borderRadius: BorderRadius.circular(4),
+                            ),
+                            child: Text(
+                              categoryName,
+                              style: AppTypography.caption.copyWith(
+                                color: AppColors.inkMuted,
+                                fontSize: 10,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ),
+                          const Spacer(),
+                          if (challenge.dueDate != null && !isCompleted)
+                            Text(
+                              'Vence: $dueDateStr',
+                              style: AppTypography.caption.copyWith(
+                                color: AppColors.statusError,
+                                fontSize: 10,
+                              ),
+                            ),
+                        ],
+                      ),
+                      const SizedBox(height: 8),
                       Text(
                         challenge.title,
                         style: AppTypography.body.copyWith(
@@ -245,6 +331,9 @@ class _MissionsPageState extends State<MissionsPage> {
   }
 
   void _showChallengeDetails(HealthChallenge challenge) {
+    final categoryName = _getCategoryName(challenge.category);
+    final dueDateStr = _formatDate(challenge.dueDate);
+
     showModalBottomSheet(
       context: context,
       backgroundColor: Colors.transparent,
@@ -269,6 +358,32 @@ class _MissionsPageState extends State<MissionsPage> {
               ),
             ),
             const SizedBox(height: 24),
+            Row(
+              children: [
+                _buildCategoryIcon(challenge.category, false),
+                const SizedBox(width: 12),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      categoryName,
+                      style: AppTypography.caption.copyWith(
+                        color: AppColors.inkMuted,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    if (challenge.dueDate != null)
+                      Text(
+                        'Vence: $dueDateStr',
+                        style: AppTypography.caption.copyWith(
+                          color: AppColors.statusError,
+                        ),
+                      ),
+                  ],
+                ),
+              ],
+            ),
+            const SizedBox(height: 16),
             Text(
               challenge.title,
               style: AppTypography.subtitle.copyWith(
