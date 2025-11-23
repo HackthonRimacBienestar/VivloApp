@@ -80,7 +80,7 @@ class JobslyWordmark extends StatelessWidget {
               mainAxisSize: MainAxisSize.min,
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Text('Contigo', style: brandStyle),
+                Text('RIMAC', style: brandStyle),
                 const SizedBox(height: 2),
                 Text('Vivlo', style: productStyle),
               ],

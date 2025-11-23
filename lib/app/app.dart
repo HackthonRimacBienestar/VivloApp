@@ -12,7 +12,7 @@ class App extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Vivlo RIMAC',
+      title: 'RIMAC Vivlo',
       debugShowCheckedModeBanner: false,
       theme: AppTheme.lightTheme,
       home: const LoginPage(),
