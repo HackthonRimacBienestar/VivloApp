@@ -83,11 +83,7 @@ class _AmbientSupportCard extends StatelessWidget {
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(24),
         gradient: const LinearGradient(
-          colors: [
-            Color(0xFFE60023),
-            Color(0xFFFF0000),
-            Color(0xFFDC143C),
-          ],
+          colors: [Color(0xFFE60023), Color(0xFFFF0000), Color(0xFFDC143C)],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
         ),
@@ -283,6 +279,406 @@ class _CommunityFilterChipState extends State<_CommunityFilterChip> {
                     colors: [Color(0xFFE60023), Color(0xFFFF0000)],
                     begin: Alignment.topLeft,
                     end: Alignment.bottomRight,
+                  )
+                : null,
+            color: widget.selected ? null : Colors.white,
+            borderRadius: BorderRadius.circular(24),
+            border: Border.all(
+              color: widget.selected
+                  ? const Color(0xFFE60023)
+                  : const Color(0xFFE5E7EB),
+              width: widget.selected ? 1.5 : 1,
+            ),
+            boxShadow: widget.selected
+                ? [
+                    BoxShadow(
+                      color: const Color(0xFFE60023).withOpacity(0.4),
+                      blurRadius: 12,
+                      offset: const Offset(0, 4),
+                    ),
+                  ]
+                : [
+                    BoxShadow(
+                      color: Colors.black.withOpacity(0.04),
+                      blurRadius: 8,
+                      offset: const Offset(0, 2),
+                    ),
+                  ],
+          ),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Icon(
+                Icons.favorite_rounded,
+                size: 16,
+                color: widget.selected ? Colors.white : const Color(0xFFE60023),
+              ),
+              const SizedBox(width: 6),
+              Text(
+                widget.label,
+                style: TextStyle(
+                  fontFamily: 'Plus Jakarta Sans',
+                  fontSize: 14,
+                  fontWeight: widget.selected
+                      ? FontWeight.w700
+                      : FontWeight.w600,
+                  color: widget.selected ? Colors.white : AppColors.ink,
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _GroupsSection extends StatelessWidget {
+  const _GroupsSection();
+
+  static const _groups = [
+    CommunityGroup(
+      name: 'Glucosa Serena',
+      description:
+          'Chequeos diarios, recetas sencillas y alertas de hipoglucemia.',
+      membersOnline: 28,
+      totalMembers: 214,
+      tone: 'Noches calmadas, hábitos sostenibles',
+      icon: Icons.water_drop,
+      accent: AppColors.accentSecondary,
+    ),
+    CommunityGroup(
+      name: 'Ritmo Cardiaco',
+      description:
+          'Personas con hipertensión comparten rutinas y recordatorios.',
+      membersOnline: 14,
+      totalMembers: 140,
+      tone: 'Respira, registra y reconoce tus logros',
+      icon: Icons.favorite,
+      accent: AppColors.accentInfo,
+    ),
+    CommunityGroup(
+      name: 'Nube Clara',
+      description:
+          'Espacio mixto para salud mental y acompañamiento emocional.',
+      membersOnline: 21,
+      totalMembers: 310,
+      tone: 'Moderado por psicólogos invitados cada semana',
+      icon: Icons.self_improvement,
+      accent: AppColors.statusSuccess,
+    ),
+  ];
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          'Chats destacados',
+          style: TextStyle(
+            fontFamily: 'Plus Jakarta Sans',
+            fontSize: 18,
+            fontWeight: FontWeight.w700,
+            color: AppColors.ink,
+            letterSpacing: -0.2,
+          ),
+        ),
+        const SizedBox(height: 18),
+        ..._groups
+            .map(
+              (group) => Padding(
+                padding: const EdgeInsets.only(bottom: 16),
+                child: _GroupCard(
+                  group: group,
+                  onTap: () {
+                    Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (_) => CommunityChatPage(group: group),
+                      ),
+                    );
+                  },
+                ),
+              ),
+            )
+            .toList(),
+      ],
+    );
+  }
+}
+
+class _GroupCard extends StatefulWidget {
+  final CommunityGroup group;
+  final VoidCallback onTap;
+
+  const _GroupCard({required this.group, required this.onTap});
+
+  @override
+  State<_GroupCard> createState() => _GroupCardState();
+}
+
+class _GroupCardState extends State<_GroupCard> {
+  bool _isHovered = false;
+
+  @override
+  Widget build(BuildContext context) {
+    return MouseRegion(
+      onEnter: (_) => setState(() => _isHovered = true),
+      onExit: (_) => setState(() => _isHovered = false),
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 250),
+        transform: Matrix4.identity()..scale(_isHovered ? 1.01 : 1.0),
+        child: InkWell(
+          onTap: widget.onTap,
+          borderRadius: BorderRadius.circular(20),
+          child: Container(
+            padding: const EdgeInsets.all(20),
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                colors: [Colors.white, widget.group.accent.withOpacity(0.02)],
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+              ),
+              borderRadius: BorderRadius.circular(20),
+              border: Border.all(color: const Color(0xFFE5E7EB), width: 1),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withOpacity(0.04),
+                  blurRadius: 16,
+                  offset: const Offset(0, 4),
+                ),
+                BoxShadow(
+                  color: widget.group.accent.withOpacity(0.08),
+                  blurRadius: 24,
+                  offset: const Offset(0, 8),
+                ),
+              ],
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Container(
+                      height: 60,
+                      width: 60,
+                      decoration: BoxDecoration(
+                        gradient: LinearGradient(
+                          colors: [
+                            widget.group.accent.withOpacity(0.2),
+                            widget.group.accent.withOpacity(0.1),
+                          ],
+                          begin: Alignment.topLeft,
+                          end: Alignment.bottomRight,
+                        ),
+                        borderRadius: BorderRadius.circular(16),
+                        boxShadow: [
+                          BoxShadow(
+                            color: widget.group.accent.withOpacity(0.3),
+                            blurRadius: 12,
+                            offset: const Offset(0, 4),
+                          ),
+                        ],
+                      ),
+                      child: Icon(
+                        widget.group.icon,
+                        color: widget.group.accent,
+                        size: 28,
+                      ),
+                    ),
+                    const SizedBox(width: 16),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Row(
+                            children: [
+                              Expanded(
+                                child: Text(
+                                  widget.group.name,
+                                  style: TextStyle(
+                                    fontFamily: 'Plus Jakarta Sans',
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.w700,
+                                    color: AppColors.ink,
+                                    letterSpacing: -0.2,
+                                  ),
+                                ),
+                              ),
+                              const SizedBox(width: 8),
+                              _OnlineBadge(count: widget.group.membersOnline),
+                            ],
+                          ),
+                          const SizedBox(height: 8),
+                          Text(
+                            widget.group.description,
+                            style: TextStyle(
+                              fontFamily: 'Plus Jakarta Sans',
+                              fontSize: 14,
+                              color: AppColors.inkSoft,
+                              height: 1.4,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 12),
+                Text(
+                  widget.group.tone,
+                  style: TextStyle(
+                    fontFamily: 'Plus Jakarta Sans',
+                    fontSize: 13,
+                    fontStyle: FontStyle.italic,
+                    color: AppColors.inkMuted,
+                    height: 1.4,
+                  ),
+                ),
+                const SizedBox(height: 14),
+                Row(
+                  children: [
+                    Container(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 10,
+                        vertical: 6,
+                      ),
+                      decoration: BoxDecoration(
+                        color: AppColors.surfaceMuted,
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Icon(
+                            Icons.people_outline,
+                            size: 14,
+                            color: AppColors.inkSoft,
+                          ),
+                          const SizedBox(width: 4),
+                          Text(
+                            '${widget.group.totalMembers} miembros',
+                            style: TextStyle(
+                              fontFamily: 'Plus Jakarta Sans',
+                              fontSize: 12,
+                              fontWeight: FontWeight.w600,
+                              color: AppColors.inkSoft,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    const Spacer(),
+                    Container(
+                      decoration: BoxDecoration(
+                        gradient: const LinearGradient(
+                          colors: [Color(0xFFE60023), Color(0xFFFF0000)],
+                          begin: Alignment.topLeft,
+                          end: Alignment.bottomRight,
+                        ),
+                        borderRadius: BorderRadius.circular(12),
+                        boxShadow: [
+                          BoxShadow(
+                            color: const Color(0xFFE60023).withOpacity(0.4),
+                            blurRadius: 12,
+                            offset: const Offset(0, 4),
+                          ),
+                        ],
+                      ),
+                      child: Material(
+                        color: Colors.transparent,
+                        child: InkWell(
+                          onTap: widget.onTap,
+                          borderRadius: BorderRadius.circular(12),
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 20,
+                              vertical: 10,
+                            ),
+                            child: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Text(
+                                  'Entrar',
+                                  style: TextStyle(
+                                    fontFamily: 'Plus Jakarta Sans',
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.w700,
+                                    color: Colors.white,
+                                  ),
+                                ),
+                                const SizedBox(width: 4),
+                                Icon(
+                                  Icons.arrow_forward_rounded,
+                                  color: Colors.white,
+                                  size: 16,
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _OnlineBadge extends StatelessWidget {
+  final int count;
+
+  const _OnlineBadge({required this.count});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+      decoration: BoxDecoration(
+        gradient: const LinearGradient(
+          colors: [Color(0xFFFFE5E5), Color(0xFFFFEEEE)],
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+        ),
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: const Color(0xFFE60023).withOpacity(0.3)),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Container(
+            width: 6,
+            height: 6,
+            decoration: BoxDecoration(
+              color: const Color(0xFF10B981),
+              shape: BoxShape.circle,
+              boxShadow: [
+                BoxShadow(
+                  color: const Color(0xFF10B981).withOpacity(0.5),
+                  blurRadius: 4,
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(width: 6),
+          Text(
+            '$count en línea',
+            style: TextStyle(
+              fontFamily: 'Plus Jakarta Sans',
+              fontSize: 11,
+              fontWeight: FontWeight.w700,
+              color: const Color(0xFFE60023),
+            ),
+          ),
+        ],
+      ),
+    );
   }
 }
 
@@ -387,7 +783,7 @@ class _CircleCard extends StatelessWidget {
                 width: 48,
                 decoration: BoxDecoration(
                   gradient: const LinearGradient(
-                    colors: [Color(0xFFFF385C), Color(0xFFFF5A5F)],
+                    colors: [Color(0xFFE60023), Color(0xFFFF0000)],
                     begin: Alignment.topLeft,
                     end: Alignment.bottomRight,
                   ),
@@ -499,7 +895,7 @@ class _CircleCard extends StatelessWidget {
               Container(
                 decoration: BoxDecoration(
                   gradient: const LinearGradient(
-                    colors: [Color(0xFFFF385C), Color(0xFFFF5A5F)],
+                    colors: [Color(0xFFE60023), Color(0xFFFF0000)],
                     begin: Alignment.topLeft,
                     end: Alignment.bottomRight,
                   ),
