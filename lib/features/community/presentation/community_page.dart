@@ -4,6 +4,7 @@ import '../../../../core/ui/theme/spacing.dart';
 import '../../../../core/ui/theme/typography.dart';
 import '../domain/community_group.dart';
 import 'community_chat_page.dart';
+import '../data/community_repository.dart';
 
 class CommunityPage extends StatelessWidget {
   const CommunityPage({super.key});
@@ -333,41 +334,22 @@ class _CommunityFilterChipState extends State<_CommunityFilterChip> {
   }
 }
 
-class _GroupsSection extends StatelessWidget {
+class _GroupsSection extends StatefulWidget {
   const _GroupsSection();
 
-  static const _groups = [
-    CommunityGroup(
-      name: 'Glucosa Serena',
-      description:
-          'Chequeos diarios, recetas sencillas y alertas de hipoglucemia.',
-      membersOnline: 28,
-      totalMembers: 214,
-      tone: 'Noches calmadas, hábitos sostenibles',
-      icon: Icons.water_drop,
-      accent: AppColors.accentSecondary,
-    ),
-    CommunityGroup(
-      name: 'Ritmo Cardiaco',
-      description:
-          'Personas con hipertensión comparten rutinas y recordatorios.',
-      membersOnline: 14,
-      totalMembers: 140,
-      tone: 'Respira, registra y reconoce tus logros',
-      icon: Icons.favorite,
-      accent: AppColors.accentInfo,
-    ),
-    CommunityGroup(
-      name: 'Nube Clara',
-      description:
-          'Espacio mixto para salud mental y acompañamiento emocional.',
-      membersOnline: 21,
-      totalMembers: 310,
-      tone: 'Moderado por psicólogos invitados cada semana',
-      icon: Icons.self_improvement,
-      accent: AppColors.statusSuccess,
-    ),
-  ];
+  @override
+  State<_GroupsSection> createState() => _GroupsSectionState();
+}
+
+class _GroupsSectionState extends State<_GroupsSection> {
+  final CommunityRepository _repository = CommunityRepository();
+  late Future<List<CommunityGroup>> _groupsFuture;
+
+  @override
+  void initState() {
+    super.initState();
+    _groupsFuture = _repository.getGroups();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -385,23 +367,44 @@ class _GroupsSection extends StatelessWidget {
           ),
         ),
         const SizedBox(height: 18),
-        ..._groups
-            .map(
-              (group) => Padding(
-                padding: const EdgeInsets.only(bottom: 16),
-                child: _GroupCard(
-                  group: group,
-                  onTap: () {
-                    Navigator.of(context).push(
-                      MaterialPageRoute(
-                        builder: (_) => CommunityChatPage(group: group),
+        FutureBuilder<List<CommunityGroup>>(
+          future: _groupsFuture,
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return const Center(child: CircularProgressIndicator());
+            }
+
+            if (snapshot.hasError) {
+              return Text('Error al cargar grupos: ${snapshot.error}');
+            }
+
+            final groups = snapshot.data ?? [];
+
+            if (groups.isEmpty) {
+              return const Text('No hay grupos disponibles.');
+            }
+
+            return Column(
+              children: groups
+                  .map(
+                    (group) => Padding(
+                      padding: const EdgeInsets.only(bottom: 16),
+                      child: _GroupCard(
+                        group: group,
+                        onTap: () {
+                          Navigator.of(context).push(
+                            MaterialPageRoute(
+                              builder: (_) => CommunityChatPage(group: group),
+                            ),
+                          );
+                        },
                       ),
-                    );
-                  },
-                ),
-              ),
-            )
-            .toList(),
+                    ),
+                  )
+                  .toList(),
+            );
+          },
+        ),
       ],
     );
   }
