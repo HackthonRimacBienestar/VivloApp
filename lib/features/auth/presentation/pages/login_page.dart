@@ -58,7 +58,7 @@ class _LoginPageState extends State<LoginPage>
       setState(() {});
       // Navegar al agente después del login exitoso
       if (mounted) {
-        Navigator.pushReplacementNamed(context, AppRoutes.voiceAgent);
+        Navigator.pushReplacementNamed(context, AppRoutes.home);
       }
     } catch (e) {
       debugPrint('Error login: $e');
@@ -81,7 +81,7 @@ class _LoginPageState extends State<LoginPage>
       setState(() {});
       // Navegar al agente después del registro exitoso
       if (mounted) {
-        Navigator.pushReplacementNamed(context, AppRoutes.voiceAgent);
+        Navigator.pushReplacementNamed(context, AppRoutes.home);
       }
     } catch (e) {
       debugPrint('Error registro: $e');
@@ -134,9 +134,9 @@ class _LoginPageState extends State<LoginPage>
               const SizedBox(height: 20),
               ElevatedButton(
                 onPressed: () {
-                  Navigator.pushNamed(context, AppRoutes.voiceAgent);
+                  Navigator.pushNamed(context, AppRoutes.home);
                 },
-                child: const Text('Ir al Asistente de Voz'),
+                child: const Text('Ir al Inicio'),
               ),
             ],
           ),
