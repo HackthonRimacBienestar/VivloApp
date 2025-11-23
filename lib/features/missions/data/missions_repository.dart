@@ -123,4 +123,23 @@ class MissionsRepository {
       orElse: () => ChallengeCategory.mental_wellbeing,
     );
   }
+
+  Future<List<Map<String, dynamic>>> getGlucoseLogs() async {
+    final userId = _authService.currentUser?.id;
+    if (userId == null) return [];
+
+    try {
+      final response = await _supabase
+          .from('glucose_logs')
+          .select('value_mg_dl, measured_at, notes')
+          .eq('user_id', userId)
+          .order('measured_at', ascending: false)
+          .limit(10); // Limit to last 10 readings
+
+      return List<Map<String, dynamic>>.from(response);
+    } catch (e) {
+      print('Error fetching glucose logs: $e');
+      return [];
+    }
+  }
 }
