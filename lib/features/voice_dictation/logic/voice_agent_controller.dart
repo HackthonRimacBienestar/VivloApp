@@ -72,6 +72,7 @@ class VoiceAgentController extends ChangeNotifier {
         _reconnectAttempts = 0; // Reset attempts on success
         _status = "Conectado";
         _safeNotifyListeners();
+        startListening(); // Auto-start listening when connected
       },
       onSessionStarted: (conversationId) {
         _currentConversationId = conversationId;
@@ -88,10 +89,8 @@ class VoiceAgentController extends ChangeNotifier {
           );
         }
         _safeNotifyListeners();
-        // Server VAD detected end of speech, stop listening locally
-        if (_isListening) {
-          stopListening();
-        }
+        // Continuous conversation: Do NOT stop listening here.
+        // The server VAD or user manual stop will handle it.
       },
       onAgentResponse: (text) {
         if (_isDisposed) return;

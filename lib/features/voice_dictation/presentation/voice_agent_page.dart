@@ -26,8 +26,8 @@ class _VoiceAgentPageState extends State<VoiceAgentPage>
   late Animation<double> _mascotPulseAnimation;
 
   // TODO: Mover a variables de entorno o almacenamiento seguro
-  final String _apiKey = 'sk_a06e4f81b4bcb8600c270ab2fb9fc3e72b652927b86fd1bf';
-  final String _agentId = 'agent_4301kajakpqjew6rg5744f1aj93k';
+  final String _apiKey = 'sk_59ee1e1e2481a8748329ecc3d6c53421405e846a64a8f01c';
+  final String _agentId = 'agent_8601kar55jvkfep8k1arj98xcqjc';
 
   @override
   void initState() {
@@ -67,10 +67,10 @@ class _VoiceAgentPageState extends State<VoiceAgentPage>
       ),
     );
 
-    // Auto-conectar al iniciar
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      _checkPermissionsAndConnect();
-    });
+    // Auto-conectar al iniciar - REMOVED per user request
+    // WidgetsBinding.instance.addPostFrameCallback((_) {
+    //   _checkPermissionsAndConnect();
+    // });
   }
 
   Future<void> _checkPermissionsAndConnect() async {
@@ -392,38 +392,45 @@ class _VoiceAgentPageState extends State<VoiceAgentPage>
 
   String _getHelpText() {
     if (!_controller.isConnected) {
-      return 'Conectando con Vivlo...';
+      return 'Toca para llamar a Vivlo';
     }
     if (_controller.isListening) {
-      return 'Escuchando...';
+      return 'Escuchando... (Toca para colgar)';
     }
     if (_controller.status.contains('Procesando')) {
-      return 'Procesando tu mensaje...';
+      return 'Procesando...';
     }
-    return 'Toca para hablar';
+    return 'Conectado';
   }
 
   Widget _buildMicrophoneButton() {
-    final isActive = _controller.isListening;
-    final isDisabled =
-        !_controller.isConnected ||
-        _controller.status.contains('Error') ||
-        _controller.status.contains('Procesando');
+    final isConnected = _controller.isConnected;
+    final isListening = _controller.isListening;
+    // Allow interaction if not connected (to connect) or if connected (to disconnect)
+    // Disable only if in a transient error state that we can't recover from easily,
+    // but for now let's allow retry.
 
     return GestureDetector(
-      onTap: isDisabled ? null : () => _controller.toggleListening(),
+      onTap: () {
+        if (isConnected) {
+          _controller.disconnect();
+        } else {
+          _checkPermissionsAndConnect();
+        }
+      },
       child: AnimatedBuilder(
         animation: Listenable.merge([_micScaleAnimation, _micGlowAnimation]),
         builder: (context, child) {
-          final buttonColor = isDisabled
-              ? AppColors.inkSoft
-              : (isActive ? AppColors.accentPrimary : AppColors.accentPrimary);
+          final buttonColor = isConnected
+              ? AppColors
+                    .flareRed // Red for hang up
+              : AppColors.accentPrimary; // Green/Primary for call
 
           return Stack(
             alignment: Alignment.center,
             children: [
               // Outer Ripple 1
-              if (isActive)
+              if (isListening)
                 Container(
                   width: 140 * _micScaleAnimation.value,
                   height: 140 * _micScaleAnimation.value,
@@ -433,7 +440,7 @@ class _VoiceAgentPageState extends State<VoiceAgentPage>
                   ),
                 ),
               // Outer Ripple 2
-              if (isActive)
+              if (isListening)
                 Container(
                   width: 120 * _micScaleAnimation.value,
                   height: 120 * _micScaleAnimation.value,
@@ -447,18 +454,24 @@ class _VoiceAgentPageState extends State<VoiceAgentPage>
                 height: 88,
                 width: 88,
                 decoration: BoxDecoration(
-                  gradient: isActive
-                      ? AppGradients.flameHero
-                      : const LinearGradient(
-                          colors: [Color(0xFF4A4A4A), Color(0xFF2D2D2D)],
+                  gradient: isConnected
+                      ? const LinearGradient(
+                          colors: [
+                            Color(0xFFEF5350),
+                            Color(0xFFD32F2F),
+                          ], // Red gradient
                           begin: Alignment.topLeft,
                           end: Alignment.bottomRight,
-                        ),
+                        )
+                      : AppGradients.flameHero, // Default gradient
                   shape: BoxShape.circle,
                   boxShadow: [
                     BoxShadow(
-                      color: (isActive ? AppColors.flareRed : Colors.black)
-                          .withOpacity(0.3),
+                      color:
+                          (isConnected
+                                  ? AppColors.flareRed
+                                  : AppColors.accentPrimary)
+                              .withOpacity(0.3),
                       blurRadius: 20,
                       offset: const Offset(0, 10),
                     ),
@@ -470,7 +483,7 @@ class _VoiceAgentPageState extends State<VoiceAgentPage>
                   ],
                 ),
                 child: Icon(
-                  isActive ? Icons.graphic_eq : Icons.mic_rounded,
+                  isConnected ? Icons.call_end : Icons.call, // Change icon
                   color: Colors.white,
                   size: 36,
                 ),
