@@ -40,7 +40,8 @@ dependencies:
   flutter_svg: ^2.0.9
   just_audio: ^0.9.36
   path_provider: ^2.1.2
-  auth0_flutter: ^1.14.0
+  supabase_flutter: ^2.8.3
+  google_sign_in: ^6.2.2
   intl: ^0.20.2
 
 dev_dependencies:

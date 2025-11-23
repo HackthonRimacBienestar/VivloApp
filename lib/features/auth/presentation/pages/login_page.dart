@@ -40,7 +40,7 @@ class _LoginPageState extends State<LoginPage>
     setState(() => _isLoading = true);
     try {
       await _controller.forward();
-      await _auth.login();
+      await _auth.loginWithGoogle();
       if (mounted) {
         Navigator.pushReplacementNamed(context, AppRoutes.home);
       }
@@ -60,7 +60,8 @@ class _LoginPageState extends State<LoginPage>
   Future<void> _register() async {
     setState(() => _isLoading = true);
     try {
-      await _auth.register();
+      // Google Sign-In handles both login and registration
+      await _auth.loginWithGoogle();
       if (mounted) {
         Navigator.pushReplacementNamed(context, AppRoutes.home);
       }
@@ -78,7 +79,7 @@ class _LoginPageState extends State<LoginPage>
 
   @override
   Widget build(BuildContext context) {
-    final user = _auth.credentials?.user;
+    final user = _auth.currentUser;
     final size = MediaQuery.of(context).size;
     final double baseHeaderHeight = (size.height * 0.30).clamp(220.0, 400.0);
 
@@ -233,7 +234,7 @@ class _LoginPageState extends State<LoginPage>
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            if (user.pictureUrl != null)
+            if (user.userMetadata?['avatar_url'] != null)
               Container(
                 padding: const EdgeInsets.all(4),
                 decoration: BoxDecoration(
@@ -241,13 +242,15 @@ class _LoginPageState extends State<LoginPage>
                   gradient: AppGradients.flameHero,
                 ),
                 child: CircleAvatar(
-                  backgroundImage: NetworkImage(user.pictureUrl.toString()),
+                  backgroundImage: NetworkImage(
+                    user.userMetadata!['avatar_url'] as String,
+                  ),
                   radius: 40,
                 ),
               ),
             const SizedBox(height: 16),
             Text(
-              'Hola, ${user.name ?? user.nickname ?? 'usuario'}',
+              'Hola, ${user.userMetadata?['full_name'] ?? user.userMetadata?['name'] ?? 'usuario'}',
               style: AppTypography.title,
             ),
             const SizedBox(height: 8),

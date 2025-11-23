@@ -14,9 +14,12 @@ class HomeHeader extends StatelessWidget {
     initializeDateFormatting('es');
     return Builder(
       builder: (context) {
-        final user = AuthService().credentials?.user;
-        final name = user?.nickname ?? user?.name ?? 'Usuario';
-        final pictureUrl = user?.pictureUrl?.toString();
+        final user = AuthService().currentUser;
+        final name =
+            user?.userMetadata?['full_name'] ??
+            user?.userMetadata?['name'] ??
+            'Usuario';
+        final pictureUrl = user?.userMetadata?['avatar_url'] as String?;
 
         return Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,

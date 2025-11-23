@@ -1,58 +1,74 @@
-import 'package:auth0_flutter/auth0_flutter.dart';
+import 'package:google_sign_in/google_sign_in.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 class AuthService {
   static final AuthService _instance = AuthService._internal();
   factory AuthService() => _instance;
   AuthService._internal();
 
-  static const _domain = 'dev-w7xybxca7a6ecknz.us.auth0.com';
-  static const _clientId = 'lWdqoyUXATcALJ6Di8VutUuapfAIdgRp';
+  final SupabaseClient _supabase = Supabase.instance.client;
 
-  final _auth0 = Auth0(_domain, _clientId);
+  // TODO: Replace with your actual Web Client ID from Google Cloud Console
+  // This is required for the idToken to be valid for Supabase
+  static const String _webClientId = 'YOUR_WEB_CLIENT_ID';
 
-  Credentials? _credentials;
+  // Google Sign In configuration
+  // serverClientId is crucial for getting the idToken
+  final GoogleSignIn _googleSignIn = GoogleSignIn(serverClientId: _webClientId);
 
-  Credentials? get credentials => _credentials;
+  User? get currentUser => _supabase.auth.currentUser;
 
-  Future<Credentials?> login() async {
+  // Returns the current session if any
+  Session? get currentSession => _supabase.auth.currentSession;
+
+  Future<AuthResponse> loginWithGoogle() async {
     try {
-      _credentials = await _auth0
-          .webAuthentication(scheme: 'followwell')
-          .login(scopes: {'openid', 'profile', 'email', 'offline_access'});
-      return _credentials;
+      // 1. Trigger Google Sign In flow
+      final GoogleSignInAccount? googleUser = await _googleSignIn.signIn();
+
+      if (googleUser == null) {
+        throw 'Google Sign In aborted by user';
+      }
+
+      // 2. Obtain the auth details from the request
+      final GoogleSignInAuthentication googleAuth =
+          await googleUser.authentication;
+
+      // 3. Create a new credential
+      final accessToken = googleAuth.accessToken;
+      final idToken = googleAuth.idToken;
+
+      if (accessToken == null) {
+        throw 'No Access Token found.';
+      }
+      if (idToken == null) {
+        throw 'No ID Token found.';
+      }
+
+      // 4. Sign in to Supabase with the tokens
+      return await _supabase.auth.signInWithIdToken(
+        provider: OAuthProvider.google,
+        idToken: idToken,
+        accessToken: accessToken,
+      );
     } catch (e) {
       print('AuthService Login Error: $e');
       rethrow;
     }
   }
 
-  Future<Credentials?> register() async {
-    try {
-      _credentials = await _auth0
-          .webAuthentication(scheme: 'followwell')
-          .login(
-            scopes: {'openid', 'profile', 'email', 'offline_access'},
-            parameters: {'screen_hint': 'signup'},
-          );
-      return _credentials;
-    } catch (e) {
-      print('AuthService Register Error: $e');
-      rethrow;
-    }
-  }
-
   Future<void> logout() async {
     try {
-      await _auth0.webAuthentication(scheme: 'followwell').logout();
-      _credentials = null;
+      await _googleSignIn.signOut(); // Sign out from Google
+      await _supabase.auth.signOut(); // Sign out from Supabase
     } catch (e) {
       print('AuthService Logout Error: $e');
       rethrow;
     }
   }
 
-  // Helper to get user info if needed, though credentials.user is usually enough
-  Future<UserProfile?> getUser() async {
-    return _credentials?.user;
+  // Helper to get user info
+  User? getUser() {
+    return _supabase.auth.currentUser;
   }
 }

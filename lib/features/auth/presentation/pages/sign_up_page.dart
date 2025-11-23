@@ -4,6 +4,9 @@ import '../../../../core/ui/widgets/widgets.dart';
 import '../../../../core/ui/theme/colors.dart';
 import '../../../../core/ui/theme/gradients.dart';
 import '../../../../core/ui/theme/spacing.dart';
+import '../../../../core/ui/theme/spacing.dart';
+import '../../../../core/services/auth_service.dart';
+import '../../../../shared/constants/routes.dart';
 import 'login_page.dart';
 
 /// Pantalla de Registro
@@ -15,6 +18,7 @@ class SignUpPage extends StatefulWidget {
 }
 
 class _SignUpPageState extends State<SignUpPage> {
+  final _auth = AuthService();
   final _formKey = GlobalKey<FormState>();
   final _nameController = TextEditingController();
   final _emailController = TextEditingController();
@@ -385,7 +389,30 @@ class _SignUpPageState extends State<SignUpPage> {
                                 child: _SocialButton(
                                   assetPath: 'assets/iconos/google.svg',
                                   label: 'Google',
-                                  onPressed: () {},
+                                  onPressed: () async {
+                                    setState(() => _isLoading = true);
+                                    try {
+                                      await _auth.loginWithGoogle();
+                                      if (mounted) {
+                                        Navigator.pushReplacementNamed(
+                                          context,
+                                          AppRoutes.home,
+                                        );
+                                      }
+                                    } catch (e) {
+                                      debugPrint('Error registro Google: $e');
+                                      if (mounted) {
+                                        ScaffoldMessenger.of(
+                                          context,
+                                        ).showSnackBar(
+                                          SnackBar(content: Text('Error: $e')),
+                                        );
+                                      }
+                                    } finally {
+                                      if (mounted)
+                                        setState(() => _isLoading = false);
+                                    }
+                                  },
                                 ),
                               ),
                               const SizedBox(width: 12),
