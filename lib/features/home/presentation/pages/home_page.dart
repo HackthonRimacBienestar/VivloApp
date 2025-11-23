@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../../../../core/ui/theme/colors.dart';
 import '../../../../core/ui/widgets/app_scaffold.dart';
 import '../../../voice_dictation/presentation/voice_agent_page.dart';
+import '../../../community/presentation/community_page.dart';
 import 'home_tab.dart';
 
 class HomePage extends StatefulWidget {
@@ -18,7 +19,7 @@ class _HomePageState extends State<HomePage> {
     const HomeTab(),
     const VoiceAgentPage(), // VIVLO
     const Center(child: Text('Mission Engine')),
-    const Center(child: Text('Community')),
+    const CommunityPage(),
   ];
 
   @override
