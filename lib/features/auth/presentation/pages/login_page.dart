@@ -20,7 +20,6 @@ class _LoginPageState extends State<LoginPage>
   final _auth = AuthService();
   bool _isLoading = false;
   late AnimationController _controller;
-  Animation<double>? _headerHeightAnimation;
 
   @override
   void initState() {
@@ -29,17 +28,6 @@ class _LoginPageState extends State<LoginPage>
       vsync: this,
       duration: const Duration(milliseconds: 600),
     );
-  }
-
-  @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    if (_headerHeightAnimation == null) {
-      _headerHeightAnimation = Tween<double>(
-        begin: 180,
-        end: MediaQuery.of(context).size.height,
-      ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeInOut));
-    }
   }
 
   @override
@@ -98,6 +86,8 @@ class _LoginPageState extends State<LoginPage>
   @override
   Widget build(BuildContext context) {
     final user = _auth.credentials?.user;
+    final size = MediaQuery.of(context).size;
+    final double baseHeaderHeight = (size.height * 0.25).clamp(180.0, 400.0);
 
     // Si el usuario está logueado, mostramos la vista de perfil (manteniendo funcionalidad existente)
     if (user != null) {
@@ -154,176 +144,183 @@ class _LoginPageState extends State<LoginPage>
             child: Column(
               children: [
                 // Espacio reservado para el header inicial
-                const SizedBox(height: 180),
+                SizedBox(height: baseHeaderHeight),
                 Expanded(
                   child: Container(
                     color: const Color(0xFFF5F5F7),
                     child: SingleChildScrollView(
                       padding: const EdgeInsets.all(AppSpacing.xl),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.stretch,
-                        children: [
-                          // Increased spacing to push form lower
-                          const SizedBox(height: 60),
+                      child: Center(
+                        child: ConstrainedBox(
+                          constraints: const BoxConstraints(maxWidth: 600),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.stretch,
+                            children: [
+                              // Increased spacing to push form lower
+                              const SizedBox(height: 60),
 
-                          // Tarjeta blanca con formulario
-                          Container(
-                            padding: const EdgeInsets.all(AppSpacing.xl),
-                            decoration: BoxDecoration(
-                              color: Colors.white,
-                              borderRadius: BorderRadius.circular(24),
-                              boxShadow: [
-                                BoxShadow(
-                                  color: Colors.black.withAlpha(20),
-                                  blurRadius: 20,
-                                  offset: const Offset(0, 4),
-                                ),
-                              ],
-                            ),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                // Título principal
-                                Text(
-                                  'Bienvenido de nuevo',
-                                  style: TextStyle(
-                                    fontFamily: 'Plus Jakarta Sans',
-                                    fontSize: 28,
-                                    fontWeight: FontWeight.bold,
-                                    letterSpacing: -0.5,
-                                    height: 1.2,
-                                    color: AppColors.ink,
-                                  ),
-                                ),
-                                const SizedBox(height: 12),
-                                // Subtítulo
-                                Text(
-                                  'Inicia sesión para continuar',
-                                  style: TextStyle(
-                                    fontFamily: 'Plus Jakarta Sans',
-                                    fontSize: 15,
-                                    fontWeight: FontWeight.normal,
-                                    letterSpacing: 0,
-                                    height: 1.4,
-                                    color: AppColors.inkMuted,
-                                  ),
-                                ),
-                                const SizedBox(height: 48),
-
-                                // Botón Iniciar Sesión
-                                PrimaryButton(
-                                  text: 'Iniciar sesión',
-                                  onPressed: _login,
-                                  isLoading: _isLoading,
-                                  fullWidth: true,
-                                ),
-
-                                const SizedBox(height: 32),
-
-                                // Divider "O inicia sesión con"
-                                Row(
-                                  children: [
-                                    Expanded(
-                                      child: Container(
-                                        height: 1,
-                                        color: AppColors.line,
-                                      ),
-                                    ),
-                                    Padding(
-                                      padding: const EdgeInsets.symmetric(
-                                        horizontal: 16,
-                                      ),
-                                      child: Text(
-                                        'O continúa con',
-                                        style: TextStyle(
-                                          fontFamily: 'Plus Jakarta Sans',
-                                          fontSize: 14,
-                                          fontWeight: FontWeight.w500,
-                                          letterSpacing: 0,
-                                          height: 1.4,
-                                          color: AppColors.inkMuted,
-                                        ),
-                                      ),
-                                    ),
-                                    Expanded(
-                                      child: Container(
-                                        height: 1,
-                                        color: AppColors.line,
-                                      ),
+                              // Tarjeta blanca con formulario
+                              Container(
+                                padding: const EdgeInsets.all(AppSpacing.xl),
+                                decoration: BoxDecoration(
+                                  color: Colors.white,
+                                  borderRadius: BorderRadius.circular(24),
+                                  boxShadow: [
+                                    BoxShadow(
+                                      color: Colors.black.withAlpha(20),
+                                      blurRadius: 20,
+                                      offset: const Offset(0, 4),
                                     ),
                                   ],
                                 ),
-                                const SizedBox(height: 32),
-
-                                // Botones sociales
-                                Row(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    Expanded(
-                                      child: _SocialButton(
-                                        assetPath: 'assets/iconos/google.svg',
-                                        label: 'Google',
-                                        onPressed:
-                                            _login, // Trigger Auth0 login
+                                    // Título principal
+                                    Text(
+                                      'Bienvenido de nuevo',
+                                      style: TextStyle(
+                                        fontFamily: 'Plus Jakarta Sans',
+                                        fontSize: 28,
+                                        fontWeight: FontWeight.bold,
+                                        letterSpacing: -0.5,
+                                        height: 1.2,
+                                        color: AppColors.ink,
                                       ),
                                     ),
-                                    const SizedBox(width: 12),
-                                    Expanded(
-                                      child: _SocialButton(
-                                        assetPath:
-                                            'assets/iconos/facebook-icon.svg',
-                                        label: 'Facebook',
-                                        onPressed:
-                                            _login, // Trigger Auth0 login
+                                    const SizedBox(height: 12),
+                                    // Subtítulo
+                                    Text(
+                                      'Inicia sesión para continuar',
+                                      style: TextStyle(
+                                        fontFamily: 'Plus Jakarta Sans',
+                                        fontSize: 15,
+                                        fontWeight: FontWeight.normal,
+                                        letterSpacing: 0,
+                                        height: 1.4,
+                                        color: AppColors.inkMuted,
                                       ),
                                     ),
-                                  ],
-                                ),
-                                const SizedBox(height: 32),
+                                    const SizedBox(height: 48),
 
-                                // Link a registro
-                                Center(
-                                  child: Row(
-                                    mainAxisSize: MainAxisSize.min,
-                                    children: [
-                                      Text(
-                                        '¿No tienes cuenta? ',
-                                        style: TextStyle(
-                                          fontFamily: 'Plus Jakarta Sans',
-                                          fontSize: 14,
-                                          fontWeight: FontWeight.normal,
-                                          letterSpacing: 0,
-                                          height: 1.4,
-                                          color: AppColors.inkMuted,
+                                    // Botón Iniciar Sesión
+                                    PrimaryButton(
+                                      text: 'Iniciar sesión',
+                                      onPressed: _login,
+                                      isLoading: _isLoading,
+                                      fullWidth: true,
+                                    ),
+
+                                    const SizedBox(height: 32),
+
+                                    // Divider "O inicia sesión con"
+                                    Row(
+                                      children: [
+                                        Expanded(
+                                          child: Container(
+                                            height: 1,
+                                            color: AppColors.line,
+                                          ),
                                         ),
-                                      ),
-                                      TextButton(
-                                        onPressed: _register,
-                                        style: TextButton.styleFrom(
+                                        Padding(
                                           padding: const EdgeInsets.symmetric(
-                                            vertical: 8,
-                                            horizontal: 4,
+                                            horizontal: 16,
                                           ),
-                                          minimumSize: const Size(44, 44),
-                                        ),
-                                        child: Text(
-                                          'Regístrate',
-                                          style: TextStyle(
-                                            fontFamily: 'Plus Jakarta Sans',
-                                            fontSize: 15,
-                                            fontWeight: FontWeight.w600,
-                                            letterSpacing: 0,
-                                            height: 1.4,
-                                            color: AppColors.flareRed,
+                                          child: Text(
+                                            'O continúa con',
+                                            style: TextStyle(
+                                              fontFamily: 'Plus Jakarta Sans',
+                                              fontSize: 14,
+                                              fontWeight: FontWeight.w500,
+                                              letterSpacing: 0,
+                                              height: 1.4,
+                                              color: AppColors.inkMuted,
+                                            ),
                                           ),
                                         ),
+                                        Expanded(
+                                          child: Container(
+                                            height: 1,
+                                            color: AppColors.line,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                    const SizedBox(height: 32),
+
+                                    // Botones sociales
+                                    Row(
+                                      children: [
+                                        Expanded(
+                                          child: _SocialButton(
+                                            assetPath:
+                                                'assets/iconos/google.svg',
+                                            label: 'Google',
+                                            onPressed:
+                                                _login, // Trigger Auth0 login
+                                          ),
+                                        ),
+                                        const SizedBox(width: 12),
+                                        Expanded(
+                                          child: _SocialButton(
+                                            assetPath:
+                                                'assets/iconos/facebook-icon.svg',
+                                            label: 'Facebook',
+                                            onPressed:
+                                                _login, // Trigger Auth0 login
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                    const SizedBox(height: 32),
+
+                                    // Link a registro
+                                    Center(
+                                      child: Row(
+                                        mainAxisSize: MainAxisSize.min,
+                                        children: [
+                                          Text(
+                                            '¿No tienes cuenta? ',
+                                            style: TextStyle(
+                                              fontFamily: 'Plus Jakarta Sans',
+                                              fontSize: 14,
+                                              fontWeight: FontWeight.normal,
+                                              letterSpacing: 0,
+                                              height: 1.4,
+                                              color: AppColors.inkMuted,
+                                            ),
+                                          ),
+                                          TextButton(
+                                            onPressed: _register,
+                                            style: TextButton.styleFrom(
+                                              padding:
+                                                  const EdgeInsets.symmetric(
+                                                    vertical: 8,
+                                                    horizontal: 4,
+                                                  ),
+                                              minimumSize: const Size(44, 44),
+                                            ),
+                                            child: Text(
+                                              'Regístrate',
+                                              style: TextStyle(
+                                                fontFamily: 'Plus Jakarta Sans',
+                                                fontSize: 15,
+                                                fontWeight: FontWeight.w600,
+                                                letterSpacing: 0,
+                                                height: 1.4,
+                                                color: AppColors.flareRed,
+                                              ),
+                                            ),
+                                          ),
+                                        ],
                                       ),
-                                    ],
-                                  ),
+                                    ),
+                                  ],
                                 ),
-                              ],
-                            ),
+                              ),
+                            ],
                           ),
-                        ],
+                        ),
                       ),
                     ),
                   ),
@@ -340,10 +337,17 @@ class _LoginPageState extends State<LoginPage>
             child: AnimatedBuilder(
               animation: _controller,
               builder: (context, child) {
-                final headerHeight = _headerHeightAnimation?.value ?? 180;
+              
+                final currentHeight =
+                    baseHeaderHeight +
+                    (size.height - baseHeaderHeight) *
+                        CurvedAnimation(
+                          parent: _controller,
+                          curve: Curves.easeInOut,
+                        ).value;
 
                 return SizedBox(
-                  height: headerHeight,
+                  height: currentHeight,
                   child: Stack(
                     children: [
                       // Fondo naranja que se expande
@@ -442,29 +446,32 @@ class _SocialButton extends StatelessWidget {
       child: OutlinedButton(
         onPressed: onPressed,
         style: OutlinedButton.styleFrom(
-          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 14),
+          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 14),
           side: BorderSide(color: AppColors.line, width: 1),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(16),
           ),
         ),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            SvgPicture.asset(assetPath, width: 24, height: 24),
-            const SizedBox(width: 12),
-            Text(
-              label,
-              style: TextStyle(
-                fontFamily: 'Plus Jakarta Sans',
-                fontSize: 15,
-                fontWeight: FontWeight.w500,
-                letterSpacing: 0,
-                height: 1.4,
-                color: AppColors.ink,
+        child: FittedBox(
+          fit: BoxFit.scaleDown,
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              SvgPicture.asset(assetPath, width: 24, height: 24),
+              const SizedBox(width: 12),
+              Text(
+                label,
+                style: TextStyle(
+                  fontFamily: 'Plus Jakarta Sans',
+                  fontSize: 15,
+                  fontWeight: FontWeight.w500,
+                  letterSpacing: 0,
+                  height: 1.4,
+                  color: AppColors.ink,
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );

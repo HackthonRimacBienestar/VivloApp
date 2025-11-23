@@ -20,37 +20,44 @@ class HomeHeader extends StatelessWidget {
         return Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
-                  children: [
-                    const Icon(
-                      Icons.wb_sunny_outlined,
-                      color: AppColors.emberOrange,
-                      size: 16,
-                    ),
-                    const SizedBox(width: 8),
-                    Text(
-                      DateFormat(
-                        'EEE d MMM',
-                        'es',
-                      ).format(DateTime.now()).toUpperCase(),
-                      style: AppTypography.caption.copyWith(
-                        color: AppColors.inkMuted,
-                        fontWeight: FontWeight.w600,
-                        letterSpacing: 1.0,
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    children: [
+                      const Icon(
+                        Icons.wb_sunny_outlined,
+                        color: AppColors.emberOrange,
+                        size: 16,
                       ),
+                      const SizedBox(width: 8),
+                      Text(
+                        DateFormat(
+                          'EEE d MMM',
+                          'es',
+                        ).format(DateTime.now()).toUpperCase(),
+                        style: AppTypography.caption.copyWith(
+                          color: AppColors.inkMuted,
+                          fontWeight: FontWeight.w600,
+                          letterSpacing: 1.0,
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 4),
+                  Text(
+                    'Hola, $name',
+                    style: AppTypography.displayM.copyWith(
+                      color: AppColors.ink,
                     ),
-                  ],
-                ),
-                const SizedBox(height: 4),
-                Text(
-                  'Hola, $name',
-                  style: AppTypography.displayM.copyWith(color: AppColors.ink),
-                ),
-              ],
+                    overflow: TextOverflow.ellipsis,
+                    maxLines: 2,
+                  ),
+                ],
+              ),
             ),
+            const SizedBox(width: 16),
             Container(
               padding: const EdgeInsets.all(2),
               decoration: BoxDecoration(
