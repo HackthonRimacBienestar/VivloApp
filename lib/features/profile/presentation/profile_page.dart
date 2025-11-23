@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import '../../../../core/ui/theme/colors.dart';
 import '../../../../core/ui/theme/typography.dart';
-import '../../../../core/ui/widgets/primary_button.dart';
 import '../../../../core/services/auth_service.dart';
 import '../data/profile_repository.dart';
 import '../domain/profile.dart';
+import 'pages/medical_profile_wizard.dart';
 
 class ProfilePage extends StatefulWidget {
   const ProfilePage({super.key});
@@ -15,28 +15,11 @@ class ProfilePage extends StatefulWidget {
 }
 
 class _ProfilePageState extends State<ProfilePage> {
-  final _formKey = GlobalKey<FormState>();
   final _repository = ProfileRepository();
   final _authService = AuthService();
 
   bool _isLoading = true;
-  bool _isSaving = false;
-
-  final _nameController = TextEditingController();
-  String? _diabetesType;
-  DateTime? _diagnosisDate;
-  int _points = 0;
-  String? _avatarUrl;
-
-  final List<String> _diabetesTypes = [
-    'Type 1',
-    'Type 2',
-    'Gestational',
-    'Pre-diabetes',
-    'LADA',
-    'MODY',
-    'Other',
-  ];
+  Profile? _profile;
 
   @override
   void initState() {
@@ -49,152 +32,118 @@ class _ProfilePageState extends State<ProfilePage> {
     final profile = await _repository.getMyProfile();
 
     if (mounted) {
-      if (profile != null) {
-        _nameController.text = profile.fullName ?? '';
-        _diabetesType = profile.diabetesType;
-        _diagnosisDate = profile.diagnosisDate;
-        _points = profile.pointsBalance;
-        _avatarUrl = profile.avatarUrl;
-      } else {
-        // Fallback to Auth metadata if profile doesn't exist yet
-        final user = _authService.currentUser;
-        _nameController.text = user?.userMetadata?['full_name'] ?? '';
-        _avatarUrl = user?.userMetadata?['avatar_url'] as String?;
-      }
-      setState(() => _isLoading = false);
-    }
-  }
-
-  Future<void> _saveProfile() async {
-    if (!_formKey.currentState!.validate()) return;
-
-    setState(() => _isSaving = true);
-    try {
-      final user = _authService.currentUser;
-      if (user == null) return;
-
-      final profile = Profile(
-        id: user.id,
-        fullName: _nameController.text,
-        diabetesType: _diabetesType,
-        diagnosisDate: _diagnosisDate,
-        // Preserve existing values
-        avatarUrl: _avatarUrl,
-        pointsBalance: _points,
-      );
-
-      await _repository.updateProfile(profile);
-
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Perfil actualizado correctamente')),
-        );
-        Navigator.pop(context);
-      }
-    } catch (e) {
-      if (mounted) {
-        ScaffoldMessenger.of(
-          context,
-        ).showSnackBar(SnackBar(content: Text('Error al guardar: $e')));
-      }
-    } finally {
-      if (mounted) setState(() => _isSaving = false);
-    }
-  }
-
-  Future<void> _selectDate(BuildContext context) async {
-    final DateTime? picked = await showDatePicker(
-      context: context,
-      initialDate: _diagnosisDate ?? DateTime.now(),
-      firstDate: DateTime(1900),
-      lastDate: DateTime.now(),
-      builder: (context, child) {
-        return Theme(
-          data: Theme.of(context).copyWith(
-            colorScheme: const ColorScheme.light(
-              primary: AppColors.accentPrimary,
-              onPrimary: Colors.white,
-              onSurface: AppColors.ink,
-            ),
-          ),
-          child: child!,
-        );
-      },
-    );
-    if (picked != null && picked != _diagnosisDate) {
       setState(() {
-        _diagnosisDate = picked;
+        _profile = profile;
+        _isLoading = false;
       });
     }
+  }
+
+  void _openMedicalWizard() async {
+    final result = await Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => MedicalProfileWizard(currentProfile: _profile),
+      ),
+    );
+
+    if (result == true) {
+      _loadProfile();
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Perfil médico actualizado')),
+      );
+    }
+  }
+
+  String _calculateTimeSinceDiagnosis() {
+    if (_profile?.diagnosisDate == null) return '---';
+    final days = DateTime.now().difference(_profile!.diagnosisDate!).inDays;
+    final years = (days / 365).floor();
+    if (years > 0) return '$years años';
+    return '$days días';
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.surface,
-      appBar: AppBar(
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-        title: Text(
-          'Mi Perfil',
-          style: AppTypography.subtitle.copyWith(
-            color: AppColors.ink,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-        centerTitle: true,
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: AppColors.ink),
-          onPressed: () => Navigator.of(context).pop(),
-        ),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.logout_rounded, color: AppColors.flareRed),
-            onPressed: () async {
-              await _authService.logout();
-              if (mounted) {
-                Navigator.pushNamedAndRemoveUntil(
-                  context,
-                  '/login',
-                  (route) => false,
-                );
-              }
-            },
-          ),
-        ],
-      ),
       body: _isLoading
           ? const Center(child: CircularProgressIndicator())
-          : SingleChildScrollView(
-              padding: const EdgeInsets.all(24),
-              child: Form(
-                key: _formKey,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    _buildAvatar(),
-                    const SizedBox(height: 16),
-                    _buildPointsBadge(),
-                    const SizedBox(height: 32),
-                    _buildTextField(
-                      label: 'Nombre completo',
-                      controller: _nameController,
-                      icon: Icons.person_outline_rounded,
+          : CustomScrollView(
+              slivers: [
+                _buildSliverAppBar(),
+                SliverToBoxAdapter(
+                  child: Padding(
+                    padding: const EdgeInsets.all(24),
+                    child: Column(
+                      children: [
+                        _buildStatsRow(),
+                        const SizedBox(height: 24),
+                        _buildMedicalCard(),
+                        if (_profile?.clinicalSummary != null) ...[
+                          const SizedBox(height: 24),
+                          _buildClinicalSummaryCard(),
+                        ],
+                        const SizedBox(height: 24),
+                        _buildAccountActions(),
+                      ],
                     ),
-                    const SizedBox(height: 24),
-                    _buildDropdown(),
-                    const SizedBox(height: 24),
-                    _buildDatePicker(),
-                    const SizedBox(height: 40),
-                    PrimaryButton(
-                      text: 'Guardar Cambios',
-                      onPressed: _saveProfile,
-                      isLoading: _isSaving,
-                    ),
-                  ],
+                  ),
+                ),
+              ],
+            ),
+    );
+  }
+
+  Widget _buildSliverAppBar() {
+    return SliverAppBar(
+      expandedHeight: 200,
+      pinned: true,
+      backgroundColor: AppColors.surface,
+      elevation: 0,
+      flexibleSpace: FlexibleSpaceBar(
+        background: Container(
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              begin: Alignment.topCenter,
+              end: Alignment.bottomCenter,
+              colors: [
+                AppColors.accentPrimary.withOpacity(0.1),
+                AppColors.surface,
+              ],
+            ),
+          ),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              const SizedBox(height: 40),
+              _buildAvatar(),
+              const SizedBox(height: 16),
+              Text(
+                _profile?.fullName ?? 'Usuario',
+                style: AppTypography.title.copyWith(
+                  fontWeight: FontWeight.bold,
+                  color: AppColors.ink,
                 ),
               ),
-            ),
+              const SizedBox(height: 8),
+              _buildPointsBadge(),
+            ],
+          ),
+        ),
+      ),
+      leading: IconButton(
+        icon: const Icon(Icons.arrow_back, color: AppColors.ink),
+        onPressed: () => Navigator.of(context).pop(),
+      ),
+      actions: [
+        IconButton(
+          icon: const Icon(Icons.settings_outlined, color: AppColors.ink),
+          onPressed: () {
+            // TODO: Navigate to settings
+          },
+        ),
+      ],
     );
   }
 
@@ -209,11 +158,13 @@ class _ProfilePageState extends State<ProfilePage> {
         ),
       ),
       child: CircleAvatar(
-        radius: 50,
+        radius: 40,
         backgroundColor: AppColors.surfaceHint,
-        backgroundImage: _avatarUrl != null ? NetworkImage(_avatarUrl!) : null,
-        child: _avatarUrl == null
-            ? const Icon(Icons.person, size: 50, color: AppColors.inkSoft)
+        backgroundImage: _profile?.avatarUrl != null
+            ? NetworkImage(_profile!.avatarUrl!)
+            : null,
+        child: _profile?.avatarUrl == null
+            ? const Icon(Icons.person, size: 40, color: AppColors.inkSoft)
             : null,
       ),
     );
@@ -221,7 +172,7 @@ class _ProfilePageState extends State<ProfilePage> {
 
   Widget _buildPointsBadge() {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
       decoration: BoxDecoration(
         color: AppColors.emberOrange.withOpacity(0.1),
         borderRadius: BorderRadius.circular(20),
@@ -232,12 +183,12 @@ class _ProfilePageState extends State<ProfilePage> {
           const Icon(
             Icons.star_rounded,
             color: AppColors.emberOrange,
-            size: 20,
+            size: 16,
           ),
-          const SizedBox(width: 8),
+          const SizedBox(width: 4),
           Text(
-            '$_points Puntos',
-            style: AppTypography.body.copyWith(
+            '${_profile?.pointsBalance ?? 0} Puntos',
+            style: AppTypography.caption.copyWith(
               color: AppColors.emberOrange,
               fontWeight: FontWeight.bold,
             ),
@@ -247,129 +198,250 @@ class _ProfilePageState extends State<ProfilePage> {
     );
   }
 
-  Widget _buildTextField({
-    required String label,
-    required TextEditingController controller,
-    required IconData icon,
-  }) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
+  Widget _buildStatsRow() {
+    return Row(
       children: [
-        Text(
-          label,
-          style: AppTypography.bodySmall.copyWith(color: AppColors.inkSoft),
-        ),
-        const SizedBox(height: 8),
-        TextFormField(
-          controller: controller,
-          decoration: InputDecoration(
-            prefixIcon: Icon(icon, color: AppColors.inkSoft),
-            border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(12),
-              borderSide: BorderSide(color: AppColors.inkSoft.withOpacity(0.3)),
-            ),
-            enabledBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(12),
-              borderSide: BorderSide(color: AppColors.inkSoft.withOpacity(0.3)),
-            ),
-            focusedBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(12),
-              borderSide: const BorderSide(color: AppColors.accentPrimary),
-            ),
-            filled: true,
-            fillColor: Colors.white,
+        Expanded(
+          child: _buildStatCard(
+            'Diagnóstico',
+            _calculateTimeSinceDiagnosis(),
+            Icons.history_rounded,
+            Colors.blue,
           ),
-          validator: (value) {
-            if (value == null || value.isEmpty) {
-              return 'Este campo es requerido';
-            }
-            return null;
+        ),
+        const SizedBox(width: 16),
+        Expanded(
+          child: _buildStatCard(
+            'Racha',
+            '5 días', // Placeholder
+            Icons.local_fire_department_rounded,
+            Colors.orange,
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildStatCard(
+    String label,
+    String value,
+    IconData icon,
+    Color color,
+  ) {
+    return Container(
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(16),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.05),
+            blurRadius: 10,
+            offset: const Offset(0, 4),
+          ),
+        ],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Container(
+            padding: const EdgeInsets.all(8),
+            decoration: BoxDecoration(
+              color: color.withOpacity(0.1),
+              borderRadius: BorderRadius.circular(8),
+            ),
+            child: Icon(icon, color: color, size: 20),
+          ),
+          const SizedBox(height: 12),
+          Text(
+            value,
+            style: AppTypography.subtitle.copyWith(fontWeight: FontWeight.bold),
+          ),
+          Text(
+            label,
+            style: AppTypography.caption.copyWith(color: AppColors.inkSoft),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildMedicalCard() {
+    return Container(
+      padding: const EdgeInsets.all(20),
+      decoration: BoxDecoration(
+        color: AppColors.accentPrimary,
+        borderRadius: BorderRadius.circular(24),
+        boxShadow: [
+          BoxShadow(
+            color: AppColors.accentPrimary.withOpacity(0.3),
+            blurRadius: 12,
+            offset: const Offset(0, 6),
+          ),
+        ],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                'Perfil Médico',
+                style: AppTypography.subtitle.copyWith(
+                  color: Colors.white,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              IconButton(
+                icon: const Icon(Icons.edit_rounded, color: Colors.white),
+                onPressed: _openMedicalWizard,
+              ),
+            ],
+          ),
+          const SizedBox(height: 16),
+          _buildMedicalInfoRow(
+            'Tipo de Diabetes',
+            _profile?.diabetesType ?? 'No especificado',
+            Icons.medical_services_outlined,
+          ),
+          const SizedBox(height: 12),
+          _buildMedicalInfoRow(
+            'Fecha Diagnóstico',
+            _profile?.diagnosisDate != null
+                ? DateFormat('dd/MM/yyyy').format(_profile!.diagnosisDate!)
+                : 'No especificado',
+            Icons.calendar_today_rounded,
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildMedicalInfoRow(String label, String value, IconData icon) {
+    return Row(
+      children: [
+        Icon(icon, color: Colors.white.withOpacity(0.7), size: 20),
+        const SizedBox(width: 12),
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              label,
+              style: AppTypography.caption.copyWith(
+                color: Colors.white.withOpacity(0.7),
+              ),
+            ),
+            Text(
+              value,
+              style: AppTypography.body.copyWith(
+                color: Colors.white,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+          ],
+        ),
+      ],
+    );
+  }
+
+  Widget _buildClinicalSummaryCard() {
+    return Container(
+      padding: const EdgeInsets.all(20),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(24),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.05),
+            blurRadius: 10,
+            offset: const Offset(0, 4),
+          ),
+        ],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Container(
+                padding: const EdgeInsets.all(8),
+                decoration: BoxDecoration(
+                  color: AppColors.accentPrimary.withOpacity(0.1),
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                child: const Icon(
+                  Icons.smart_toy_rounded,
+                  color: AppColors.accentPrimary,
+                  size: 20,
+                ),
+              ),
+              const SizedBox(width: 12),
+              Text(
+                'Resumen Clínico (IA)',
+                style: AppTypography.subtitle.copyWith(
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 16),
+          Text(
+            _profile!.clinicalSummary!,
+            style: AppTypography.body.copyWith(
+              color: AppColors.ink,
+              height: 1.5,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildAccountActions() {
+    return Column(
+      children: [
+        ListTile(
+          contentPadding: EdgeInsets.zero,
+          leading: Container(
+            padding: const EdgeInsets.all(8),
+            decoration: BoxDecoration(
+              color: AppColors.surfaceHint,
+              borderRadius: BorderRadius.circular(8),
+            ),
+            child: const Icon(Icons.person_outline, color: AppColors.ink),
+          ),
+          title: const Text('Editar Datos Personales'),
+          trailing: const Icon(Icons.chevron_right, color: AppColors.inkSoft),
+          onTap: () {
+            // TODO: Edit personal info
           },
         ),
-      ],
-    );
-  }
-
-  Widget _buildDropdown() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          'Tipo de Diabetes',
-          style: AppTypography.bodySmall.copyWith(color: AppColors.inkSoft),
-        ),
-        const SizedBox(height: 8),
-        DropdownButtonFormField<String>(
-          value: _diabetesType,
-          decoration: InputDecoration(
-            prefixIcon: const Icon(
-              Icons.medical_services_outlined,
-              color: AppColors.inkSoft,
-            ),
-            border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(12),
-              borderSide: BorderSide(color: AppColors.inkSoft.withOpacity(0.3)),
-            ),
-            enabledBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(12),
-              borderSide: BorderSide(color: AppColors.inkSoft.withOpacity(0.3)),
-            ),
-            focusedBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(12),
-              borderSide: const BorderSide(color: AppColors.accentPrimary),
-            ),
-            filled: true,
-            fillColor: Colors.white,
-          ),
-          items: _diabetesTypes.map((type) {
-            return DropdownMenuItem(value: type, child: Text(type));
-          }).toList(),
-          onChanged: (value) => setState(() => _diabetesType = value),
-          hint: const Text('Selecciona tu tipo'),
-        ),
-      ],
-    );
-  }
-
-  Widget _buildDatePicker() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          'Fecha de Diagnóstico',
-          style: AppTypography.bodySmall.copyWith(color: AppColors.inkSoft),
-        ),
-        const SizedBox(height: 8),
-        InkWell(
-          onTap: () => _selectDate(context),
-          borderRadius: BorderRadius.circular(12),
-          child: Container(
-            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 16),
+        const Divider(),
+        ListTile(
+          contentPadding: EdgeInsets.zero,
+          leading: Container(
+            padding: const EdgeInsets.all(8),
             decoration: BoxDecoration(
-              color: Colors.white,
-              border: Border.all(color: AppColors.inkSoft.withOpacity(0.3)),
-              borderRadius: BorderRadius.circular(12),
+              color: AppColors.flareRed.withOpacity(0.1),
+              borderRadius: BorderRadius.circular(8),
             ),
-            child: Row(
-              children: [
-                const Icon(
-                  Icons.calendar_today_rounded,
-                  color: AppColors.inkSoft,
-                ),
-                const SizedBox(width: 12),
-                Text(
-                  _diagnosisDate != null
-                      ? DateFormat('dd/MM/yyyy').format(_diagnosisDate!)
-                      : 'Seleccionar fecha',
-                  style: AppTypography.body.copyWith(
-                    color: _diagnosisDate != null
-                        ? AppColors.ink
-                        : AppColors.inkSoft,
-                  ),
-                ),
-              ],
-            ),
+            child: const Icon(Icons.logout_rounded, color: AppColors.flareRed),
           ),
+          title: Text(
+            'Cerrar Sesión',
+            style: AppTypography.body.copyWith(color: AppColors.flareRed),
+          ),
+          onTap: () async {
+            await _authService.logout();
+            if (mounted) {
+              Navigator.pushNamedAndRemoveUntil(
+                context,
+                '/login',
+                (route) => false,
+              );
+            }
+          },
         ),
       ],
     );

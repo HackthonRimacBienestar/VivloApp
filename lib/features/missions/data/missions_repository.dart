@@ -92,4 +92,35 @@ class MissionsRepository {
       rethrow;
     }
   }
+
+  Future<Map<ChallengeCategory, int>> getChallengeCounts() async {
+    final userId = _authService.currentUser?.id;
+    if (userId == null) return {};
+
+    try {
+      final response = await _supabase
+          .from('health_challenges')
+          .select('category, status')
+          .eq('user_id', userId)
+          .eq('status', 'completed');
+
+      final counts = <ChallengeCategory, int>{};
+      for (final item in response as List) {
+        final categoryStr = item['category'] as String;
+        final category = _parseCategory(categoryStr);
+        counts[category] = (counts[category] ?? 0) + 1;
+      }
+      return counts;
+    } catch (e) {
+      print('Error fetching challenge counts: $e');
+      return {};
+    }
+  }
+
+  ChallengeCategory _parseCategory(String category) {
+    return ChallengeCategory.values.firstWhere(
+      (e) => e.toString().split('.').last == category,
+      orElse: () => ChallengeCategory.mental_wellbeing,
+    );
+  }
 }
