@@ -4,6 +4,8 @@ import '../shared/constants/routes.dart';
 import '../features/voice_dictation/presentation/voice_agent_page.dart';
 import '../features/auth/presentation/pages/login_page.dart';
 import '../features/home/presentation/pages/home_page.dart';
+import '../features/home/presentation/pages/insights_page.dart';
+import '../features/profile/presentation/profile_page.dart';
 
 /// Bootstrap de la aplicación
 class App extends StatelessWidget {
@@ -20,6 +22,8 @@ class App extends StatelessWidget {
         AppRoutes.voiceAgent: (_) => const VoiceAgentPage(),
         AppRoutes.login: (_) => const LoginPage(),
         AppRoutes.home: (_) => const HomePage(),
+        AppRoutes.profile: (_) => const ProfilePage(),
+        AppRoutes.insights: (_) => const InsightsPage(),
       },
     );
   }

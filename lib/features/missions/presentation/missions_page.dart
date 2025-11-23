@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../../../core/ui/theme/colors.dart';
 import '../../../../core/ui/theme/typography.dart';
-import '../../../../core/ui/theme/gradients.dart';
+
 import '../data/missions_repository.dart';
 import '../domain/health_challenge.dart';
 

@@ -21,6 +21,7 @@ class AppRoutes {
   static const String home = '/home';
   static const String todayTasks = '/home/today-tasks';
   static const String notificationDetail = '/home/notification-detail';
+  static const String insights = '/insights';
 
   // Tracking
   static const String quickLog = '/tracking/quick-log';
@@ -94,6 +95,7 @@ class AppRoutes {
   static const String achievements = '/rewards/achievements';
 
   // Perfil
+  static const String profile = '/profile';
   static const String profileOverview = '/profile/overview';
   static const String editProfile = '/profile/edit';
   static const String connectedDevices = '/profile/connected-devices';

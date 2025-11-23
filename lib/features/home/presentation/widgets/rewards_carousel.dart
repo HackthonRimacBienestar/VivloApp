@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import '../../../../core/ui/theme/colors.dart';
 import '../../../../core/ui/theme/spacing.dart';
 import '../../../../core/ui/theme/typography.dart';
+import '../../../profile/data/profile_repository.dart';
+import '../../../profile/domain/profile.dart';
 
 class RewardsCarousel extends StatelessWidget {
   const RewardsCarousel({super.key});
@@ -21,18 +23,28 @@ class RewardsCarousel extends StatelessWidget {
                 color: AppColors.ink,
               ),
             ),
-            Row(
-              children: [
-                const Icon(Icons.stars, color: AppColors.emberOrange, size: 20),
-                const SizedBox(width: 4),
-                Text(
-                  '72 pts',
-                  style: AppTypography.body.copyWith(
-                    fontWeight: FontWeight.bold,
-                    color: AppColors.emberOrange,
-                  ),
-                ),
-              ],
+            FutureBuilder<Profile?>(
+              future: ProfileRepository().getMyProfile(),
+              builder: (context, snapshot) {
+                final points = snapshot.data?.pointsBalance ?? 0;
+                return Row(
+                  children: [
+                    const Icon(
+                      Icons.stars,
+                      color: AppColors.emberOrange,
+                      size: 20,
+                    ),
+                    const SizedBox(width: 4),
+                    Text(
+                      '$points pts',
+                      style: AppTypography.body.copyWith(
+                        fontWeight: FontWeight.bold,
+                        color: AppColors.emberOrange,
+                      ),
+                    ),
+                  ],
+                );
+              },
             ),
           ],
         ),
