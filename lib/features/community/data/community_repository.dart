@@ -74,22 +74,32 @@ class CommunityRepository {
       for (final map in maps) {
         final userId = map['user_id'] as String;
 
-        // Fetch the profile for this user
-        final profileResponse = await _supabase
-            .from('profiles')
-            .select('full_name')
-            .eq('id', userId)
-            .maybeSingle();
+        try {
+          // Fetch the profile for this user
+          final profileResponse = await _supabase
+              .from('profiles')
+              .select('full_name')
+              .eq('id', userId)
+              .single();
 
-        final fullName = profileResponse?['full_name'] as String?;
+          final fullName = profileResponse['full_name'] as String?;
 
-        // Add profile name to the message map
-        final messageWithProfile = Map<String, dynamic>.from(map);
-        if (fullName != null) {
-          messageWithProfile['profiles'] = {'full_name': fullName};
+          // Add profile name to the message map
+          final messageWithProfile = Map<String, dynamic>.from(map);
+          messageWithProfile['profiles'] = {'full_name': fullName ?? 'Usuario'};
+
+          messagesWithProfiles.add(
+            CommunityMessage.fromJson(messageWithProfile),
+          );
+        } catch (e) {
+          print('Error fetching profile for user $userId: $e');
+          // Add message without profile name
+          final messageWithProfile = Map<String, dynamic>.from(map);
+          messageWithProfile['profiles'] = {'full_name': 'Usuario'};
+          messagesWithProfiles.add(
+            CommunityMessage.fromJson(messageWithProfile),
+          );
         }
-
-        messagesWithProfiles.add(CommunityMessage.fromJson(messageWithProfile));
       }
 
       yield messagesWithProfiles;
