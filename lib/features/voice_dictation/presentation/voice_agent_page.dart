@@ -324,13 +324,7 @@ class _VoiceAgentPageState extends State<VoiceAgentPage>
 
           // Disclaimer discreto en la parte inferior
           const SizedBox(height: 16),
-          Text(
-            'No es un diagnóstico médico',
-            style: AppTypography.caption.copyWith(
-              color: AppColors.inkSoft.withOpacity(0.6),
-              fontSize: 11,
-            ),
-          ),
+        
         ],
       ),
     );
