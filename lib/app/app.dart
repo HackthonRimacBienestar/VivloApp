@@ -14,7 +14,7 @@ class App extends StatelessWidget {
       title: 'Vivlo RIMAC',
       debugShowCheckedModeBanner: false,
       theme: AppTheme.lightTheme,
-      initialRoute: AppRoutes.login,
+      home: const LoginPage(),
       routes: {
         AppRoutes.voiceAgent: (_) => const VoiceAgentPage(),
         AppRoutes.login: (_) => const LoginPage(),
