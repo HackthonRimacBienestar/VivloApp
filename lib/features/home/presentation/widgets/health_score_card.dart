@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import '../../../../core/ui/theme/colors.dart';
-
 import '../../../../core/ui/theme/spacing.dart';
 import '../../../../core/ui/theme/typography.dart';
 
@@ -36,8 +35,6 @@ class HealthScoreCard extends StatelessWidget {
             child: Stack(
               alignment: Alignment.center,
               children: [
-                // Simple Hexagon representation using a rotated container or custom paint
-                // For simplicity and robustness, using a Container with shape or icon
                 const Icon(Icons.hexagon, size: 90, color: Colors.white24),
                 Text(
                   '72',
@@ -83,12 +80,23 @@ class HealthScoreCard extends StatelessWidget {
                       color: Colors.white.withOpacity(0.2),
                       borderRadius: BorderRadius.circular(20),
                     ),
-                    child: Text(
-                      'Read more',
-                      style: AppTypography.caption.copyWith(
-                        color: Colors.white,
-                        fontWeight: FontWeight.w600,
-                      ),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Text(
+                          'Ver Insights',
+                          style: AppTypography.caption.copyWith(
+                            color: Colors.white,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                        const SizedBox(width: 4),
+                        const Icon(
+                          Icons.arrow_forward_ios,
+                          color: Colors.white,
+                          size: 10,
+                        ),
+                      ],
                     ),
                   ),
                 ),

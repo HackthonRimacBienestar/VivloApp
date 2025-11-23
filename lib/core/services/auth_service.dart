@@ -1,6 +1,10 @@
 import 'package:auth0_flutter/auth0_flutter.dart';
 
 class AuthService {
+  static final AuthService _instance = AuthService._internal();
+  factory AuthService() => _instance;
+  AuthService._internal();
+
   static const _domain = 'dev-w7xybxca7a6ecknz.us.auth0.com';
   static const _clientId = 'lWdqoyUXATcALJ6Di8VutUuapfAIdgRp';
 
@@ -45,5 +49,10 @@ class AuthService {
       print('AuthService Logout Error: $e');
       rethrow;
     }
+  }
+
+  // Helper to get user info if needed, though credentials.user is usually enough
+  Future<UserProfile?> getUser() async {
+    return _credentials?.user;
   }
 }

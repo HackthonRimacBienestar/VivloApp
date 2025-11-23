@@ -17,9 +17,7 @@ class _HomePageState extends State<HomePage> {
   final List<Widget> _pages = [
     const HomeTab(),
     const VoiceAgentPage(), // VIVLO
-    const Center(child: Text('Insights Engine')),
     const Center(child: Text('Mission Engine')),
-    const Center(child: Text('Rewards')),
     const Center(child: Text('Community')),
   ];
 
@@ -44,16 +42,8 @@ class _HomePageState extends State<HomePage> {
           BottomNavigationBarItem(icon: Icon(Icons.home_filled), label: 'Home'),
           BottomNavigationBarItem(icon: Icon(Icons.mic), label: 'Vivlo'),
           BottomNavigationBarItem(
-            icon: Icon(Icons.insights),
-            label: 'Insights',
-          ),
-          BottomNavigationBarItem(
             icon: Icon(Icons.rocket_launch),
             label: 'Mission',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.emoji_events),
-            label: 'Rewards',
           ),
           BottomNavigationBarItem(icon: Icon(Icons.people), label: 'Community'),
         ],
