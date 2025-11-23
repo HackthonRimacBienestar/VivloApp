@@ -57,6 +57,27 @@ class _MissionsPageState extends State<MissionsPage>
           .toList();
     }
 
+    // Ordenar por urgencia: las que tienen menos tiempo restante primero
+    filteredChallenges.sort((a, b) {
+      // Misiones completadas van al final
+      if (a.status == ChallengeStatus.completed &&
+          b.status != ChallengeStatus.completed) {
+        return 1;
+      }
+      if (b.status == ChallengeStatus.completed &&
+          a.status != ChallengeStatus.completed) {
+        return -1;
+      }
+
+      // Si ambas están completadas o ambas activas, ordenar por fecha de vencimiento
+      if (a.dueDate == null && b.dueDate == null) return 0;
+      if (a.dueDate == null) return 1; // Sin fecha va al final
+      if (b.dueDate == null) return -1; // Sin fecha va al final
+
+      // Ordenar por fecha más cercana primero
+      return a.dueDate!.compareTo(b.dueDate!);
+    });
+
     if (mounted) {
       setState(() {
         _challenges = filteredChallenges;
@@ -110,6 +131,27 @@ class _MissionsPageState extends State<MissionsPage>
   String _formatDate(DateTime? date) {
     if (date == null) return 'Sin fecha límite';
     return DateFormat('dd MMM', 'es').format(date);
+  }
+
+  String _getTimeRemaining(DateTime? dueDate) {
+    if (dueDate == null) return '';
+
+    final now = DateTime.now();
+    final difference = dueDate.difference(now);
+
+    if (difference.isNegative) {
+      return 'Vencida';
+    }
+
+    if (difference.inDays > 0) {
+      return '${difference.inDays}d restantes';
+    } else if (difference.inHours > 0) {
+      return '${difference.inHours}h restantes';
+    } else if (difference.inMinutes > 0) {
+      return '${difference.inMinutes}min restantes';
+    } else {
+      return 'Vence pronto';
+    }
   }
 
   void _clearFilter() {
@@ -195,19 +237,21 @@ class _MissionsPageState extends State<MissionsPage>
               ),
             ],
           ),
-          Align(
-            alignment: Alignment.topCenter,
-            child: ConfettiWidget(
-              confettiController: _confettiController,
-              blastDirectionality: BlastDirectionality.explosive,
-              shouldLoop: false,
-              colors: const [
-                AppColors.accentPrimary,
-                AppColors.emberOrange,
-                AppColors.statusSuccess,
-                Colors.blue,
-                Colors.purple,
-              ],
+          IgnorePointer(
+            child: Align(
+              alignment: Alignment.topCenter,
+              child: ConfettiWidget(
+                confettiController: _confettiController,
+                blastDirectionality: BlastDirectionality.explosive,
+                shouldLoop: false,
+                colors: const [
+                  AppColors.accentPrimary,
+                  AppColors.emberOrange,
+                  AppColors.statusSuccess,
+                  Colors.blue,
+                  Colors.purple,
+                ],
+              ),
             ),
           ),
         ],
@@ -287,6 +331,7 @@ class _MissionsPageState extends State<MissionsPage>
     final isCompleted = challenge.status == ChallengeStatus.completed;
     final categoryName = _getCategoryName(challenge.category);
     final dueDateStr = _formatDate(challenge.dueDate);
+    final timeRemaining = _getTimeRemaining(challenge.dueDate);
 
     return Container(
       margin: const EdgeInsets.only(bottom: 16),
@@ -388,16 +433,24 @@ class _MissionsPageState extends State<MissionsPage>
                         children: [
                           if (challenge.dueDate != null && !isCompleted) ...[
                             Icon(
-                              Icons.calendar_today_rounded,
+                              Icons.access_time_rounded,
                               size: 14,
                               color: AppColors.statusError,
                             ),
                             const SizedBox(width: 4),
                             Text(
-                              dueDateStr,
+                              timeRemaining,
                               style: AppTypography.caption.copyWith(
                                 color: AppColors.statusError,
                                 fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                            const SizedBox(width: 8),
+                            Text(
+                              '· $dueDateStr',
+                              style: AppTypography.caption.copyWith(
+                                color: AppColors.inkSoft,
+                                fontWeight: FontWeight.w500,
                               ),
                             ),
                             const SizedBox(width: 12),

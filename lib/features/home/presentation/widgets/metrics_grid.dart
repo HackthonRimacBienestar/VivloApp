@@ -7,7 +7,9 @@ import '../../../missions/domain/health_challenge.dart';
 import '../../../missions/presentation/pages/category_metrics_page.dart';
 
 class MetricsGrid extends StatefulWidget {
-  const MetricsGrid({super.key});
+  final ValueNotifier<int>? refreshTrigger;
+
+  const MetricsGrid({super.key, this.refreshTrigger});
 
   @override
   State<MetricsGrid> createState() => _MetricsGridState();
@@ -22,6 +24,19 @@ class _MetricsGridState extends State<MetricsGrid> {
   void initState() {
     super.initState();
     _loadCounts();
+
+    // Escuchar cambios en el trigger para refrescar
+    widget.refreshTrigger?.addListener(_onRefreshTriggered);
+  }
+
+  @override
+  void dispose() {
+    widget.refreshTrigger?.removeListener(_onRefreshTriggered);
+    super.dispose();
+  }
+
+  void _onRefreshTriggered() {
+    _loadCounts();
   }
 
   Future<void> _loadCounts() async {
@@ -32,6 +47,11 @@ class _MetricsGridState extends State<MetricsGrid> {
         _isLoading = false;
       });
     }
+  }
+
+  // Método público para refrescar los datos desde fuera
+  void refreshData() {
+    _loadCounts();
   }
 
   @override
@@ -92,13 +112,15 @@ class _MetricsGridState extends State<MetricsGrid> {
         color: Colors.transparent,
         borderRadius: BorderRadius.circular(20),
         child: InkWell(
-          onTap: () {
-            Navigator.push(
+          onTap: () async {
+            await Navigator.push(
               context,
               MaterialPageRoute(
                 builder: (context) => CategoryMetricsPage(category: category),
               ),
             );
+            // Recargar los contadores cuando se regresa
+            _loadCounts();
           },
           borderRadius: BorderRadius.circular(20),
           child: Padding(
