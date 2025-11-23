@@ -4,6 +4,7 @@ import '../../../../core/ui/theme/spacing.dart';
 import '../widgets/home_header.dart';
 import '../widgets/health_score_card.dart';
 import '../widgets/metrics_grid.dart';
+import '../widgets/rewards_carousel.dart';
 
 class HomeTab extends StatelessWidget {
   const HomeTab({super.key});
@@ -23,6 +24,8 @@ class HomeTab extends StatelessWidget {
               HealthScoreCard(),
               SizedBox(height: AppSpacing.xl),
               MetricsGrid(),
+              SizedBox(height: AppSpacing.xl),
+              RewardsCarousel(),
             ],
           ),
         ),

@@ -31,26 +31,30 @@ class MetricsGrid extends StatelessWidget {
             MetricCard(
               title: 'NUTRICIÓN',
               icon: Icons.fastfood,
-              color: Color(0xFFEF5350), // Red 400
+              color: Color(0xFFEF5350),
               chartType: ChartType.bar,
+              index: 0,
             ),
             MetricCard(
               title: 'BIENESTAR EMOCIONAL',
               icon: Icons.psychology,
-              color: Color(0xFFE57373), // Red 300
+              color: Color(0xFFE57373),
               chartType: ChartType.line,
+              index: 1,
             ),
             MetricCard(
               title: 'EJERCICIOS Y SALUD',
               icon: Icons.directions_run,
-              color: Color(0xFFF44336), // Red 500
+              color: Color(0xFFF44336),
               chartType: ChartType.line,
+              index: 2,
             ),
             MetricCard(
               title: 'SUEÑO Y DESCANSO',
               icon: Icons.bedtime,
-              color: Color(0xFFE53935), // Red 600
+              color: Color(0xFFE53935),
               chartType: ChartType.bar,
+              index: 3,
             ),
           ],
         ),
