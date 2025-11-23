@@ -14,18 +14,24 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   int _currentIndex = 0;
 
-  final List<Widget> _pages = [
-    const HomeTab(),
-    const VoiceAgentPage(), // VIVLO
-    const Center(child: Text('Mission Engine')),
-    const Center(child: Text('Community')),
-  ];
-
   @override
   Widget build(BuildContext context) {
+    final List<Widget> pages = [
+      const HomeTab(),
+      VoiceAgentPage(
+        onBackPressed: () {
+          setState(() {
+            _currentIndex = 0;
+          });
+        },
+      ), // VIVLO
+      const Center(child: Text('Mission Engine')),
+      const Center(child: Text('Community')),
+    ];
+
     return AppScaffold(
       showAppBar: false,
-      body: IndexedStack(index: _currentIndex, children: _pages),
+      body: IndexedStack(index: _currentIndex, children: pages),
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: _currentIndex,
         onTap: (index) {
