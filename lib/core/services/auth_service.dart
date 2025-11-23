@@ -10,7 +10,8 @@ class AuthService {
 
   // TODO: Replace with your actual Web Client ID from Google Cloud Console
   // This is required for the idToken to be valid for Supabase
-  static const String _webClientId = 'YOUR_WEB_CLIENT_ID';
+  static const String _webClientId =
+      '893398700652-04u75ec9msvodsqvl60qo9nl9ua055th.apps.googleusercontent.com';
 
   // Google Sign In configuration
   // serverClientId is crucial for getting the idToken
